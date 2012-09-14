@@ -17,6 +17,13 @@ import android.widget.Toast;
 import android.os.Vibrator;
 import android.media.ToneGenerator;
 import android.media.AudioManager;
+import android.widget.ImageView;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.FileNotFoundException;
+import java.io.ByteArrayOutputStream;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
 
 import com.google.zxing.LuminanceSource;
 import com.google.zxing.BinaryBitmap;
@@ -35,7 +42,7 @@ import com.google.zxing.BarcodeFormat;
  */
 public class Preview extends ViewGroup implements SurfaceHolder.Callback {
     private final String TAG = "Preview";
-    private static final int TRY_PREVIEW = 15;
+    private static final int TRY_PREVIEW = 5;
 
     private SurfaceView mSurfaceView;
     private SurfaceHolder mHolder;
@@ -49,6 +56,7 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
     private boolean barcodeModeFlag = false;
     private boolean isFocusRunning = false;
     private int mPreviewCounts = 0;
+    private Context mContext = getContext();
 
     //シングルトン
     private RectFactory rectFactory = RectFactory.getRectFactory();
@@ -347,16 +355,16 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
             //解析を3フレームに1回の割合で行う
             if(mPreviewCounts % 3 == 0){
                 //オートフォーカス中は解析しない
-                //if(isFocusRunning != true){
+                if(isFocusRunning != true){
                     barcodeDecorder(data);
                     //Log.w("preview","decode exec");
-                    //}
+                }
              }
 
             //オートフォーカス中は解析しない
-            if(isFocusRunning != true){
-                barcodeDecorder(data);
-            }
+            //if(isFocusRunning != true){
+            //barcodeDecorder(data);
+            //}
         }
     };
 
@@ -407,13 +415,72 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
                 Log.w("autofocus","フォーマット:"+format);
                 Log.w("autofocus:","コンテンツ:"+contents);
 
-                Toast.makeText(getContext(),String.format("format:%s , contens:%s",format,result.getText()),Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext,String.format("format:%s , contens:%s",format,contents),Toast.LENGTH_SHORT).show();
 
-                Vibrator vibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
+                Vibrator vibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
                 vibrator.vibrate(40);
 
                 ToneGenerator toneGenerator = new ToneGenerator(AudioManager.STREAM_SYSTEM, ToneGenerator.MAX_VOLUME);
                 toneGenerator.startTone(ToneGenerator.TONE_PROP_BEEP);
+
+                //画像を保存(data/data/package_name/files)
+                int[] rgb = new int[(previewWidth * previewHeight)];//ARGB8888の画素の配列
+                String fileName = null;
+                try{
+                    //ARGB8888でからのビットマップ作成
+                    Bitmap bmp = Bitmap.createBitmap(previewWidth,previewHeight,Bitmap.Config.ARGB_8888);
+                    decodeYUV420SP(rgb,data,previewWidth,previewHeight);//変換
+                    //変換した画素からビットマップにセット
+                    bmp.setPixels(rgb,0,previewWidth,0,0,previewWidth,previewHeight);
+                    try{
+                        //画像保存処理
+                        //XXX画像ファイル名をちゃんする(a.jpg)
+
+                        fileName = "iris" + String.valueOf(System.currentTimeMillis()) + ".jpg";
+
+                        FileOutputStream out = mContext.openFileOutput(fileName,Context.MODE_WORLD_READABLE);
+                        bmp.compress(Bitmap.CompressFormat.JPEG,100,out);
+                        out.close();
+                    }catch(Exception e){
+
+                    }
+
+
+                }catch(Exception e){
+
+                }
+
+                //画像読み込み(data/data/package_name/files)
+                Bitmap bm = null;
+                try{
+                    FileInputStream in = mContext.openFileInput(fileName);
+                    BufferedInputStream binput = new BufferedInputStream(in);
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                    byte[] w = new byte[1024];
+                    while (binput.read(w) >= 0){
+                        out.write(w,0,1024);
+                    }
+                    byte[] byteData = out.toByteArray();
+                    bm = BitmapFactory.decodeByteArray(byteData,0,byteData.length);
+                    in.close();
+                    out.close();
+                }catch(FileNotFoundException e){
+
+                }catch(IOException e){
+
+                }
+
+                //トースト表示
+                ImageView imageView = new ImageView(mContext);
+                imageView.setImageBitmap(bm);
+                Toast toast = new Toast(mContext);
+                toast.setDuration(Toast.LENGTH_LONG);
+                toast.setView(imageView);
+                toast.show();
+
+                //画像削除(data/data/package_name/files)
+                mContext.deleteFile(fileName);
+
             }
 
         }else{
@@ -433,4 +500,29 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
         }
     }
 
+    //プレビュー画像からビットマップへ変換
+   public static final void decodeYUV420SP(int[] rgb,byte[] yuv420sp,int width,int height){
+        final int frameSize = width * height;
+        for (int j=0,yp = 0; j<height; j++){
+            int uvp = frameSize + (j>>1)*width,u=0,v=0;
+            for(int i = 0; i<width; i++ ,yp++){
+                int y = (0xff & ((int)yuv420sp[yp])) -16;
+                if(y<0) y=0;
+                if((i & 1) == 0){
+                v = (0xff & yuv420sp[uvp++]) -128;
+                u = (0xff & yuv420sp[uvp++]) -128;
+                }
+            int y1192 = 1192 * y;
+            int r = (y1192 +1634 * v);
+            int g = (y1192 -833 * v -400 *u);
+            int b = (y1192 +2066 *u);
+            if(r < 0) r = 0;else if(r > 262143) r = 262143;
+            if(g < 0) g = 0;else if(g > 262143) g = 262143;
+            if(b < 0) b = 0;else if(b > 262143) b = 262143;
+            rgb[yp] = 0xff000000 | ((r<<6) & 0xff0000) | ((g>>2) & 0xff00) | ((b>>10) & 0xff);
+            }
+
+        }
+
+   }
 }
