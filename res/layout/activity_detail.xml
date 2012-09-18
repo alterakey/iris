@@ -1,0 +1,40 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal" >
+
+    <ImageView
+        android:id="@+id/thumbnail"
+        android:layout_width="250dp"
+        android:layout_height="180dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="10dp"
+        android:src="@android:drawable/sym_def_app_icon" />
+    
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="5dp"
+        android:text="@string/category"
+        android:id="@+id/categoryButton"/>
+
+    <ImageView 
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="7dp"
+        android:src="@android:drawable/sym_def_app_icon"
+        android:id="@+id/icon"/>
+    
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/register"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="30dp"
+        android:id="@+id/registerButton"/>
+
+</LinearLayout>
