@@ -1,4 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">MainActivity</string>
+    <string name="title">refrigerator register</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_top">TopActivity</string>
+    <string name="barcode">バーコード読み取り</string>
+    <string name="refrigartor">冷蔵庫の中へ</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_detail">DetailActivity</string>
+    <string name="category">カテゴリ選択</string>
+    <string name="register">登録</string>
+    <string name="title_activity_result">ResultActivity</string>
+    <string name="title_activity_category">CategoryActivity</string>
+
 </resources>
