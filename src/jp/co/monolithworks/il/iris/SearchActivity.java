@@ -67,14 +67,15 @@ public class SearchActivity extends Activity
         }
 
         public String get() {
-            String jancode = mQuery;
 
-            //client = AndroidHttpClient.newInstance("Lynx/2.8.5rel.1");
-            client = AndroidHttpClient.newInstance("w3m/0.5.2");
-            //DefaultHttpClient client = new DefaultHttpClient();
-            HttpGet http = new HttpGet(String.format("http://www.google.co.jp/search?ie=Shift_JIS&hl=ja&source=hp&q=%s&btnG=Google+%%8C%%9F%%8D%%F5&gbv=1",jancode));
-            //HttpGet http = new HttpGet("http://www.google.co.jp/search?ie=Shift_JIS&hl=ja&source=hp&q=test&btnG=Google+%8C%9F%8D%F5&gbv=1");
-            //HttpGet http = new HttpGet("http://www.google.co.jp/search?ie=UTF-8&hl=ja&source=hp&q=test&btnG=Google+%E6%A4%9C%E7%B4%A2&gbv=1");
+            HttpGet http;
+
+            if(mQuery.charAt(0).equals("h")){
+                http = response(mQuery);
+            }else{
+                String jancode = mQuery;
+                http = response(jancode);
+                    }
 
             try{
                 InputStream is = client.execute(http).getEntity().getContent();
@@ -88,5 +89,15 @@ public class SearchActivity extends Activity
             }
             return mStringBuffer.toString();
         }
+
+        public HttpGet response(String request){
+
+            //client = AndroidHttpClient.newInstance("Lynx/2.8.5rel.1");
+            client = AndroidHttpClient.newInstance("w3m/0.5.2");
+            //DefaultHttpClient client = new DefaultHttpClient();
+            HttpGet http = new HttpGet(String.format("http://www.google.co.jp/search?ie=Shift_JIS&hl=ja&source=hp&q=%s&btnG=Google+%%8C%%9F%%8D%%F5&gbv=1",jancode));
+            //HttpGet http = new HttpGet("http://www.google.co.jp/search?ie=Shift_JIS&hl=ja&source=hp&q=test&btnG=Google+%8C%9F%8D%F5&gbv=1");
+            //HttpGet http = new HttpGet("http://www.google.co.jp/search?ie=UTF-8&hl=ja&source=hp&q=test&btnG=Google+%E6%A4%9C%E7%B4%A2&gbv=1");
+            return http;
     }
 }
