@@ -31,7 +31,7 @@ public class FridgeActivity extends Activity {
             consumelimit_list.add(m);
         }
 
-        ListView lv = (ListView)findViewById(R.id.listView1);
+        ListView lv = (ListView)findViewById(R.id.result_listView);
         //lv.setAdapter(new LimitAdapter(this,mConsumelimit_list));
         SimpleAdapter adapter = new SimpleAdapter(this,consumelimit_list,R.layout.result_item,new String[] {"category","consumelimit"},new int[] {R.id.category,R.id.consumelimit});
         lv.setAdapter(adapter);

@@ -10,5 +10,12 @@
     android:gravity="center"
     android:text="横向きにして、枠内にバーコード全体が入るようにしてください"
     />
+<TextView
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:text="オプションメニューから読取終了や写真撮影ができます"
+    />
+
 </LinearLayout>
 

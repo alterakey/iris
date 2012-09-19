@@ -52,14 +52,22 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
     private String mResultText = null;
     private MultiFormatReader reader = null;
     private int mFalsePreviewCounts = 0;
-    private boolean autoFocusFlag = false;
-    private boolean barcodeModeFlag = false;
-    private boolean isFocusRunning = false;
+    private boolean mAutoFocusFlag = false;
+    private boolean mBarcodeModeFlag = false;
+    private boolean mIsFocusRunning = false;
     private int mPreviewCounts = 0;
     private Context mContext = getContext();
+    private Decoder mDecoder = new Decoder();
+    private boolean isDecodeBitmapPreview = false;
+    private int mLeft;
+    private int mTop;
+    private int mWidth;
+    private int mHeight;
+    private int mPreviewWidth;
+    private int mPreviewHeight;
 
     //シングルトン
-    private RectFactory rectFactory = RectFactory.getRectFactory();
+    private RectFactory mRectFactory = RectFactory.getRectFactory();
 
     Preview(Context context) {
         super(context);
@@ -80,6 +88,16 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
         //surfaceViewのtypeを設定
         //ARの場合は、「SURFACE_TYPE_NORMAL」を使用
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+
+        //シングルトンから読み込み
+        mLeft = mRectFactory.finderLeftX;
+        mTop = mRectFactory.finderTopY;
+        mWidth = mRectFactory.finderWidth;
+        mHeight = mRectFactory.finderHeight;
+        mPreviewWidth = mRectFactory.previewWidth;
+        mPreviewHeight = mRectFactory.previewHeight;
+
+
 
     }
     //アプリケーションからコントロールに対してカメラをセット
@@ -116,12 +134,12 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
                 if(supported.equals(Camera.Parameters.FOCUS_MODE_MACRO)){
                     cp.setFocusMode(Camera.Parameters.FOCUS_MODE_MACRO);
                     mCamera.setParameters(cp);
-                    autoFocusFlag = true;
+                    mAutoFocusFlag = true;
                     //オートフォーカスード
                 }else if(supported.equals(Camera.Parameters.FOCUS_MODE_AUTO)){
                     cp.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
                     mCamera.setParameters(cp);
-                    autoFocusFlag = true;
+                    mAutoFocusFlag = true;
                 }
             }
         }
@@ -136,7 +154,7 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
                 Log.w("preview","scene mode supported list :" + supported);
                 if(supported.equals(Camera.Parameters.SCENE_MODE_BARCODE)){
                     cp.setSceneMode(Camera.Parameters.SCENE_MODE_BARCODE);
-                    barcodeModeFlag = true;
+                    mBarcodeModeFlag = true;
                 }
             }
         }
@@ -173,8 +191,8 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
             mPreviewSize = getOptimalPreviewSize(mSupportedPreviewSizes, width, height);
 
             //シングルトンにプレビュー画面の大きさを書き込み
-            rectFactory.previewWidth = mPreviewSize.width;
-            rectFactory.previewHeight = mPreviewSize.height;
+            mRectFactory.previewWidth = mPreviewSize.width;
+            mRectFactory.previewHeight = mPreviewSize.height;
         }
     }
 
@@ -222,9 +240,9 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
                 mCamera.setPreviewDisplay(holder);
 
                 isCheckAutoFocus();
-                Log.w("preview","autoFocusFlag:" + autoFocusFlag);
+                Log.w("preview","mAutoFocusFlag:" + mAutoFocusFlag);
                 isCheckSceneMode();
-                Log.w("preview","barcodeModeFlag:" + barcodeModeFlag);
+                Log.w("preview","mBarcodeModeFlag:" + mBarcodeModeFlag);
             }
         } catch (IOException exception) {
             Log.e(TAG, "IOException caused by setPreviewDisplay()", exception);
@@ -251,10 +269,10 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
         double targetRatio = (double) w / h;
         if (sizes == null) return null;
 
-        int left = rectFactory.finderLeftX;
-        int top = rectFactory.finderTopY;
-        int width = rectFactory.finderWidth;
-        int height = rectFactory.finderHeight;
+        int left = mRectFactory.finderLeftX;
+        int top = mRectFactory.finderTopY;
+        int width = mRectFactory.finderWidth;
+        int height = mRectFactory.finderHeight;
 
         Size optimalSize = null;
         double minDiff = Double.MAX_VALUE;
@@ -320,15 +338,15 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
             //camera.autoFocus(null);//null入れるときもautofocus実行してしまう
             Log.w("onAutoFocus","auto focus callback");
             requestPreview();
-            isFocusRunning = false;
+            mIsFocusRunning = false;
         }
     };
 
     //オートフォーカス起動
     private void requestAutoFocus(){
-        //if(mCamera != null || autoFocusFlag != false){
+        //if(mCamera != null || mAutoFocusFlag != false){
             mCamera.autoFocus(mAutoFocusListener);
-            isFocusRunning = true;
+            mIsFocusRunning = true;
             Log.w("autofocus","auto focus 実行");
             //}
     }
@@ -354,57 +372,24 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
 
             //解析を3フレームに1回の割合で行う
             if(mPreviewCounts % 3 == 0){
-                //オートフォーカス中は解析しない
-                if(isFocusRunning != true){
-                    barcodeDecorder(data);
+                //オートフォーカス中は解析しない　かつ　デコード中は解析しない
+                if((mIsFocusRunning != true)&&(isDecodeBitmapPreview != true)){
+                    decodeBitmapPreview(data);
                     //Log.w("preview","decode exec");
                 }
              }
-
-            //オートフォーカス中は解析しない
-            //if(isFocusRunning != true){
-            //barcodeDecorder(data);
-            //}
         }
     };
 
-    //プレビュー画像からバーコード解析をする
-    public void barcodeDecorder(byte[] data){
 
+    //プレビュー画像からバーコード解析をして、画像を保存して表示
+    public void decodeBitmapPreview(byte[] data){
         Result result = null;
-        //シングルトンから読み込み
-        int left = rectFactory.finderLeftX;
-        int top = rectFactory.finderTopY;
-        int width = rectFactory.finderWidth;
-        int height = rectFactory.finderHeight;
-        int previewWidth = mPreviewSize.width;
-        int previewHeight = mPreviewSize.height;
 
-        Log.w("barcodeDecode","left:"+left);
-        Log.w("barcodeDecode","top:"+top);
-        Log.w("barcodeDecode","width:"+width);
-        Log.w("barcodeDecode","height:"+height);
-        Log.w("barcodeDecode","previewWidth:"+previewWidth);
-        Log.w("barcodeDecode","previewHeight:"+previewHeight);
-
-
-        //引数（byte配列の画像データ、プレビューサイズの横幅、プレビューサイズの高さ、読み取りエリアの開始X座標、読み取りエリアの開始Y座標、読み取りエリアの横幅、読み取りエリアの高さ、反転の有無）
-        PlanarYUVLuminanceSource source = new PlanarYUVLuminanceSource(
-            data,previewWidth,previewHeight,left,top,width,height,false);
-
-        //画像を変換（YUVからBITMAP）
-        BinaryBitmap binaryBitmap = new BinaryBitmap(new HybridBinarizer(source));
-        reader = new MultiFormatReader();
-
-        try{
-            //画像から解析情報を取り出す
-            result = reader.decode(binaryBitmap);
-
-        }catch (Exception e){
-            Log.w("onPreviewFrame","result false");
-        }
+        result = mDecoder.barcodeDecoder(data,mContext);
 
         if(result != null){
+            isDecodeBitmapPreview = true;
             String contents = result.getText();
             if(!(contents.equals(mResultText))){
                 mResultText = contents;
@@ -415,7 +400,7 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
                 Log.w("autofocus","フォーマット:"+format);
                 Log.w("autofocus:","コンテンツ:"+contents);
 
-                Toast.makeText(mContext,String.format("format:%s , contens:%s",format,contents),Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext,String.format("format:%s , contens:%s",format,contents),Toast.LENGTH_LONG).show();
 
                 Vibrator vibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
                 vibrator.vibrate(40);
@@ -424,18 +409,16 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
                 toneGenerator.startTone(ToneGenerator.TONE_PROP_BEEP);
 
                 //画像を保存(data/data/package_name/files)
-                int[] rgb = new int[(previewWidth * previewHeight)];//ARGB8888の画素の配列
+                int[] rgb = new int[(mPreviewWidth * mPreviewHeight)];//ARGB8888の画素の配列
                 String fileName = null;
                 try{
                     //ARGB8888でからのビットマップ作成
-                    Bitmap bmp = Bitmap.createBitmap(previewWidth,previewHeight,Bitmap.Config.ARGB_8888);
-                    decodeYUV420SP(rgb,data,previewWidth,previewHeight);//変換
+                    Bitmap bmp = Bitmap.createBitmap(mPreviewWidth,mPreviewHeight,Bitmap.Config.ARGB_8888);
+                    mDecoder.decodeYUV420SP(rgb,data,mPreviewWidth,mPreviewHeight);//変換
                     //変換した画素からビットマップにセット
-                    bmp.setPixels(rgb,0,previewWidth,0,0,previewWidth,previewHeight);
+                    bmp.setPixels(rgb,0,mPreviewWidth,0,0,mPreviewWidth,mPreviewHeight);
                     try{
                         //画像保存処理
-                        //XXX画像ファイル名をちゃんする(a.jpg)
-
                         fileName = "iris" + String.valueOf(System.currentTimeMillis()) + ".jpg";
 
                         FileOutputStream out = mContext.openFileOutput(fileName,Context.MODE_WORLD_READABLE);
@@ -469,20 +452,29 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
                 }catch(IOException e){
 
                 }
+                
+                if(bm != null){
+                	ScanData scanData = ScanData.getScanData();
+                	scanData.thumbnail = bm;
+                	//scanData.barcode = format;
+                	
+                }
 
+                /*
                 //トースト表示
                 ImageView imageView = new ImageView(mContext);
                 imageView.setImageBitmap(bm);
                 Toast toast = new Toast(mContext);
-                toast.setDuration(Toast.LENGTH_LONG);
+                toast.setDuration(Toast.LENGTH_SHORT);
                 toast.setView(imageView);
                 toast.show();
+                 */
+
 
                 //画像削除(data/data/package_name/files)
                 mContext.deleteFile(fileName);
-
             }
-
+            isDecodeBitmapPreview = false;
         }else{
             //失敗したと判定
             if(mFalsePreviewCounts < TRY_PREVIEW){
@@ -491,7 +483,7 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
                 Log.w("autofocus","mFalsePreviewCounts:"+mFalsePreviewCounts);
                 requestPreview();
             }else{
-                //15回連続失敗したので、オートフォーカスからやり直し
+                //5回連続失敗したので、オートフォーカスからやり直し
                 Log.w("autofocus","preview reset");
                 Log.w("autofocus","mFalsePreviewCounts:"+mFalsePreviewCounts);
                 mFalsePreviewCounts = 0;
@@ -500,29 +492,79 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
         }
     }
 
-    //プレビュー画像からビットマップへ変換
-   public static final void decodeYUV420SP(int[] rgb,byte[] yuv420sp,int width,int height){
-        final int frameSize = width * height;
-        for (int j=0,yp = 0; j<height; j++){
-            int uvp = frameSize + (j>>1)*width,u=0,v=0;
-            for(int i = 0; i<width; i++ ,yp++){
-                int y = (0xff & ((int)yuv420sp[yp])) -16;
-                if(y<0) y=0;
-                if((i & 1) == 0){
-                v = (0xff & yuv420sp[uvp++]) -128;
-                u = (0xff & yuv420sp[uvp++]) -128;
+    public void takePicture(){
+        requestAutoFocus();
+        mCamera.takePicture(null,null,mPictureListener);
+    }
+
+    private Camera.PictureCallback mPictureListener = new Camera.PictureCallback(){
+        public void onPictureTaken(byte[] data,Camera camera){
+
+            /*
+
+            if(data != null){
+                //画像を保存(data/data/package_name/files)
+                int[] rgb = new int[(mPreviewWidth * mPreviewHeight)];//ARGB8888の画素の配列
+                String fileName = null;
+                try{
+                    //ARGB8888でからのビットマップ作成
+                    Bitmap bmp = Bitmap.createBitmap(mPreviewWidth,mPreviewHeight,Bitmap.Config.ARGB_8888);
+                    mDecoder.decodeYUV420SP(rgb,data,mPreviewWidth,mPreviewHeight);//変換
+                    //変換した画素からビットマップにセット
+                    bmp.setPixels(rgb,0,mPreviewWidth,0,0,mPreviewWidth,mPreviewHeight);
+                    try{
+                        //画像保存処理
+                        fileName = "iris" + String.valueOf(System.currentTimeMillis()) + ".jpg";
+
+                        FileOutputStream out = mContext.openFileOutput(fileName,Context.MODE_WORLD_READABLE);
+                        bmp.compress(Bitmap.CompressFormat.JPEG,100,out);
+                        out.close();
+                    }catch(Exception e){
+
+                    }
+
+
+                }catch(Exception e){
+
                 }
-            int y1192 = 1192 * y;
-            int r = (y1192 +1634 * v);
-            int g = (y1192 -833 * v -400 *u);
-            int b = (y1192 +2066 *u);
-            if(r < 0) r = 0;else if(r > 262143) r = 262143;
-            if(g < 0) g = 0;else if(g > 262143) g = 262143;
-            if(b < 0) b = 0;else if(b > 262143) b = 262143;
-            rgb[yp] = 0xff000000 | ((r<<6) & 0xff0000) | ((g>>2) & 0xff00) | ((b>>10) & 0xff);
+
+                //画像読み込み(data/data/package_name/files)
+                Bitmap bm = null;
+
+                Log.w("ScanActivity","fileName:");
+
+                try{
+                //XXX nullpoでおちる
+                    FileInputStream in = mContext.openFileInput(fileName);
+                    BufferedInputStream binput = new BufferedInputStream(in);
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                    byte[] w = new byte[1024];
+                    while (binput.read(w) >= 0){
+                        out.write(w,0,1024);
+                    }
+                    byte[] byteData = out.toByteArray();
+                    bm = BitmapFactory.decodeByteArray(byteData,0,byteData.length);
+                    in.close();
+                    out.close();
+                }catch(FileNotFoundException e){
+
+                }catch(IOException e){
+
+                }
+
+                //トースト表示
+                ImageView imageView = new ImageView(mContext);
+                imageView.setImageBitmap(bm);
+                Toast toast = new Toast(mContext);
+                toast.setDuration(Toast.LENGTH_SHORT);
+                toast.setView(imageView);
+                toast.show();
             }
 
-        }
+            */
 
-   }
+            mCamera.startPreview();
+
+        }
+    };
 }

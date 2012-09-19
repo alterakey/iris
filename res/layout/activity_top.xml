@@ -30,7 +30,7 @@
         	android:text="@string/barcode" />
 
     	<Button
-        	android:id="@+id/refrigeratorButton"
+        	android:id="@+id/fridgeButton"
         	android:layout_width="200dp"
         	android:layout_height="wrap_content"
         	android:text="@string/refrigartor" />
