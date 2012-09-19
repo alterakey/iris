@@ -24,7 +24,7 @@ public class DetailActivity extends Activity {
         }
     }
 
-    private void onClick(View v){
+    public void onClick(View v){
         Intent intent = new Intent();
         if(v.getId() == R.id.categoryButton){
             intent.setClass(this,CategoryActivity.class);

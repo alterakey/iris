@@ -11,7 +11,7 @@
         android:layout_height="100dp"
         android:src="@android:drawable/sym_def_app_icon"
         android:layout_gravity="center" />
-	    
+
 	    <LinearLayout
 	        android:layout_width="match_parent"
 	    	android:layout_height="wrap_content"
@@ -19,44 +19,43 @@
 	    	android:gravity="center_vertical"
 	    	android:paddingTop="10dp"
 	    	android:paddingBottom="10dp"  >
-	    
-	        <ImageView 
+
+	        <ImageView
 	            android:id="@+id/icon"
         		android:layout_width="wrap_content"
         		android:layout_height="wrap_content"
         		android:src="@android:drawable/sym_def_app_icon" />
-	        
+
 	        <TextView
 	            android:id="@+id/category"
         		android:layout_width="wrap_content"
         		android:layout_height="wrap_content"
         		android:textSize="18sp"
         		android:text="カテゴリ名" />
-	        
-		</LinearLayout>
-		<LinearLayout
-		    android:layout_width="match_parent"
+
+	    </LinearLayout>
+	    <LinearLayout
+		android:layout_width="match_parent"
 	    	android:layout_height="wrap_content"
 	    	android:orientation="horizontal"
 	    	android:gravity="center_vertical">
-	    
-		<TextView
-	    	android:layout_width="wrap_content"
-	    	android:layout_height="wrap_content"
-	    	android:id="@+id/consumelimit"
-	    	android:textSize="18sp"
-	    	android:text="消費期限" 
-	    	android:layout_weight="0.8"/>
-				
-		<TextView
-	    	android:layout_width="wrap_content"
-	    	android:layout_height="wrap_content"
-	    	android:id="@+id/consumelimit"
-	    	android:textSize="18sp"
-	    	android:text="3日" 
-	    	android:gravity="right"
-	    	android:layout_weight="0.2"/>
-		
-		</LinearLayout>
+
+	      <TextView
+		  android:layout_width="wrap_content"
+		  android:layout_height="wrap_content"
+		  android:textSize="18sp"
+		  android:text="消費期限"
+		  android:layout_weight="0.8"/>
+
+	      <TextView
+		  android:layout_width="wrap_content"
+		  android:layout_height="wrap_content"
+		  android:id="@+id/consumelimit"
+		  android:textSize="18sp"
+		  android:text="3日"
+		  android:gravity="right"
+		  android:layout_weight="0.2"/>
+
+	    </LinearLayout>
 
 </LinearLayout>
