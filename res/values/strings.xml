@@ -13,5 +13,7 @@
     <string name="register">登録</string>
     <string name="title_activity_result">ResultActivity</string>
     <string name="title_activity_category">CategoryActivity</string>
+    <string name="title_activity_fridge">FridgeActivity</string>
+    <string name="onClick">onClick</string>
 
 </resources>
