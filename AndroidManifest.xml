@@ -61,18 +61,10 @@
             android:label="@string/title_activity_category" >
 
         </activity>
-<<<<<<< HEAD
-	<activity
-	    android:name=".FridgeActivity"
-	    android:label="@string/title_activity_fridge" >
-
-	</activity>
-=======
-        <activity
-            android:name=".FridgeActivity"
-            android:label="@string/title_activity_category" >
-        </activity>
->>>>>>> 4542be94fafd21cdf3e99b2f632a2254ab51ec80
+		<activity
+	        android:name=".FridgeActivity"
+	        android:label="@string/title_activity_fridge" >
+		</activity>
     </application>
 
 </manifest>
