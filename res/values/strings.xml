@@ -14,5 +14,7 @@
     <string name="title_activity_category">CategoryActivity</string>
     <string name="menu_scan_end">読取終了</string>
     <string name="menu_scan_shutter">写真撮影</string>
+    <string name="title_activity_fridge">FridgeActivity</string>
+    <string name="onClick">onClick</string>
 
 </resources>

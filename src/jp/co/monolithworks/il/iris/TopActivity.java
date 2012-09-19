@@ -32,8 +32,9 @@ public class TopActivity extends Activity {
     fridgeButton.setOnClickListener(new OnClickListener(){
     	@Override
     	public void onClick(View v){
-    		//Intent intent = new Intent(TopActivity.this,fridgeActivity.class);
-    		//startActivity(intent);
+    		Intent intent = new Intent();
+    		intent.setClass(TopActivity.this,FridgeActivity.class);
+    		startActivity(intent);
     	}
     });
 }
