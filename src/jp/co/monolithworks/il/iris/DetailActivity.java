@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.view.Menu;
 import android.content.Intent;
 import android.view.View;
+import android.widget.Toast;
 
 public class DetailActivity extends Activity {
 
@@ -21,6 +22,7 @@ public class DetailActivity extends Activity {
             Bundle extras = intent.getExtras();
             if (extras != null) {
             }
+            Toast.makeText(this, "戻りました。", Toast.LENGTH_LONG).show();
         }
     }
 
