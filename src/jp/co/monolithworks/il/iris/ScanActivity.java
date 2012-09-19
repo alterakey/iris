@@ -9,7 +9,10 @@ import android.hardware.Camera.Size;
 
 import java.util.*;
 import android.content.Context;
+import android.content.Intent;
+
 import java.io.IOException;
+
 import android.util.Log;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Toast;
@@ -23,7 +26,7 @@ import com.google.zxing.client.android.PlanarYUVLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.BarcodeFormat;
 
-public class MainActivity extends Activity
+public class ScanActivity extends Activity
 {
     private Preview mPreview;
     public int numberOfCameras;
@@ -57,7 +60,7 @@ public class MainActivity extends Activity
         mCameraOverLayView = new CameraOverlayView(this);
         addContentView(mCameraOverLayView,new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.FILL_PARENT));
 
-        View view = this.getLayoutInflater().inflate(R.layout.main,null);
+        View view = this.getLayoutInflater().inflate(R.layout.camera_overlay,null);
         addContentView(view,new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,ViewGroup.LayoutParams.FILL_PARENT));
 
         //カメラ数を取得
@@ -93,5 +96,27 @@ public class MainActivity extends Activity
             mCamera.release();
             mCamera = null;
         }
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_scan, menu);
+        return true;
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent = new Intent();
+        switch (item.getItemId()) {
+            case R.id.menu_scan_end:
+                intent.setClass(this, ResultActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.menu_scan_shutter:
+            	//XXX写真撮影処理
+            	mPreview.takePicture();
+                break;
+        }
+        return true;
     }
 }
