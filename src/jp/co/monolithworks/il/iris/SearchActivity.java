@@ -53,13 +53,13 @@ public class SearchActivity extends Activity
     private void onClick(View v){
         if(v.getId() == R.id.button){
 
-            new LoadTask(new Getter(mEt.getText().toString()), mTv).execute();
+            //new LoadTask(new Getter(mEt.getText().toString()), mTv).execute();
         }
     }
 
     public static class Getter {
         private AndroidHttpClient client;
-        private String mQuery;
+        private String mQuery = "";
         private StringBuffer mStringBuffer = new StringBuffer();
 
         public Getter(String query) {
@@ -70,11 +70,11 @@ public class SearchActivity extends Activity
 
             HttpGet http;
 
-            if(mQuery.charAt(0).equals("h")){
+            if(mQuery.startsWith("h")){
                 http = response(mQuery);
             }else{
                 String jancode = mQuery;
-                http = response(jancode);
+                http = response(String.format("http://www.google.co.jp/search?ie=Shift_JIS&hl=ja&source=hp&q=%s&btnG=Google+%%8C%%9F%%8D%%F5&gbv=1",jancode));
                     }
 
             try{
@@ -95,9 +95,10 @@ public class SearchActivity extends Activity
             //client = AndroidHttpClient.newInstance("Lynx/2.8.5rel.1");
             client = AndroidHttpClient.newInstance("w3m/0.5.2");
             //DefaultHttpClient client = new DefaultHttpClient();
-            HttpGet http = new HttpGet(String.format("http://www.google.co.jp/search?ie=Shift_JIS&hl=ja&source=hp&q=%s&btnG=Google+%%8C%%9F%%8D%%F5&gbv=1",jancode));
+            HttpGet http = new HttpGet(request);
             //HttpGet http = new HttpGet("http://www.google.co.jp/search?ie=Shift_JIS&hl=ja&source=hp&q=test&btnG=Google+%8C%9F%8D%F5&gbv=1");
             //HttpGet http = new HttpGet("http://www.google.co.jp/search?ie=UTF-8&hl=ja&source=hp&q=test&btnG=Google+%E6%A4%9C%E7%B4%A2&gbv=1");
             return http;
+        }
     }
 }
