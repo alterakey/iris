@@ -58,7 +58,13 @@
         <activity
             android:name=".CategoryActivity"
             android:label="@string/title_activity_category" >
+
         </activity>
+	<activity
+	    android:name=".FridgeActivity"
+	    android:label="@string/title_activity_fridge" >
+
+	</activity>
     </application>
 
 </manifest>
