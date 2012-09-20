@@ -48,7 +48,7 @@ public class ResultAdapter extends ArrayAdapter<ResultData>{
 
         return convertView;
     }
-    
+
     class ViewHolder{
         ImageView thumbnailView,iconView;
         TextView categoryText,consumelimitText;
