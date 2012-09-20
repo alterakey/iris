@@ -7,7 +7,7 @@ public class ScanData {
 	
 	public static Bitmap thumbnail;
 	public static String barcode;
-	public static int scanDate;
+	public static String scanDate;
 	
 	public static ScanData getScanData(){
 		return instance;
