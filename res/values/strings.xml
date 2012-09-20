@@ -9,12 +9,14 @@
     <string name="refrigartor">冷蔵庫の中へ</string>
     <string name="title_activity_detail">DetailActivity</string>
     <string name="category">カテゴリ選択</string>
-    <string name="register">登録</string>
+    <string name="register">OK!</string>
     <string name="title_activity_result">ResultActivity</string>
     <string name="title_activity_category">CategoryActivity</string>
     <string name="menu_scan_end">読取終了</string>
     <string name="menu_scan_shutter">写真撮影</string>
     <string name="title_activity_fridge">FridgeActivity</string>
     <string name="onClick">onClick</string>
+    <string name="cancel">Cancel</string>
+    <string name="categoryselect">カテゴリを選択してください。</string>
 
 </resources>

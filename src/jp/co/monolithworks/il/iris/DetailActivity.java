@@ -31,7 +31,10 @@ public class DetailActivity extends Activity {
         if(v.getId() == R.id.categoryButton){
             intent.setClass(this,CategoryActivity.class);
             startActivityForResult(intent,REQUEST_ITEM);
-        }else if(v.getId() == R.id.registerButton){
+        }else if(v.getId() == R.id.okButton){
+            intent.setClass(this,ResultActivity.class);
+            startActivity(intent);
+        }else if(v.getId() == R.id.cancelButton){
             intent.setClass(this,ResultActivity.class);
             startActivity(intent);
         }
