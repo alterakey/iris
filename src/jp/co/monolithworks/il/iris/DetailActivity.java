@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
 import android.content.Intent;
-import android.view.View;
+import android.view.*;
 import android.widget.Toast;
 
 public class DetailActivity extends Activity {
@@ -43,6 +43,22 @@ public class DetailActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_detail, menu);
+        return true;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent = new Intent();
+
+        switch (item.getItemId()) {
+        case R.id.menu_settings:
+            //intent.setClass(this, SettingActivity.class);
+            //startActivity(intent);
+            break;
+        case R.id.menu_fridge:
+            intent.setClass(this, FridgeActivity.class);
+            startActivity(intent);
+            break;
+        }
         return true;
     }
 }

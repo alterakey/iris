@@ -18,5 +18,8 @@
     <string name="onClick">onClick</string>
     <string name="cancel">Cancel</string>
     <string name="categoryselect">カテゴリを選択してください。</string>
+    <string name="menu_fridge_scan">読み取り</string>
+    <string name="menu_fridge_delete">削除</string>
+    <string name="menu_detail_fridge">XXX</string>
 
 </resources>

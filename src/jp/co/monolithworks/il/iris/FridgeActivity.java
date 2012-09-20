@@ -14,7 +14,7 @@ public class FridgeActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
 
-        List<ConsumeLimit_Items> consumelimit_list = new List<consumelimit_list>();
+        List<ConsumeLimit_Items> consumelimit_list = new LinkedList<ConsumeLimit_Items>();
 
 
         String[] category_name = {"野菜","肉","魚","加工食品","調味料"};
@@ -115,27 +115,25 @@ public class FridgeActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_detail, menu);
+        getMenuInflater().inflate(R.menu.activity_fridge, menu);
         return true;
     }
 
     @Override
-public boolean onOptionsItemSelected(com.actionbarsherlock.view.MenuItem item) {
+public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent = new Intent();
 
         switch (item.getItemId()) {
-        case R.id.menu_deck_select_deck_add:
-            intent.setClass(this, DeckNameEditActivity.class);
-            intent.putExtra("add","true");
+        case R.id.menu_settings:
+            //intent.setClass(this, SettingActivity.class);
+            //startActivity(intent);
+            break;
+        case R.id.menu_delete:
+            intent.setClass(this, DetailActivity.class);
             startActivity(intent);
             break;
-        case R.id.menu_deck_select_import:
-            // TODO card import UI and logic implementation
-            intent.setClass(this, DeckImportActivity.class);
-            startActivity(intent);
-            break;
-        case R.id.menu_deck_select_home:
-            intent.setClass(this, HomeActivity.class);
+        case R.id.menu_scan:
+            intent.setClass(this, ScanActivity.class);
             startActivity(intent);
             break;
         }
