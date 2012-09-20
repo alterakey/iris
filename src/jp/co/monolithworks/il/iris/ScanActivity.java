@@ -15,8 +15,11 @@ import java.io.IOException;
 
 import android.util.Log;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.LinearLayout;
+import android.view.View.OnClickListener;
 
 import com.google.zxing.LuminanceSource;
 import com.google.zxing.BinaryBitmap;
@@ -83,6 +86,15 @@ public class ScanActivity extends Activity
             String message = "カメラの起動に失敗しました。　\nカメラを使用する場合は、端末を再起動してください";
             Toast.makeText(getApplicationContext(),message,Toast.LENGTH_SHORT).show();
         }
+
+        ImageView shutterButton = (ImageView)findViewById(R.id.shutter_button);
+        shutterButton.setOnClickListener(new OnClickListener(){
+        	public void onClick(View v){
+        		//写真撮影処理
+                mPreview.takePicture();
+        	}
+        });
+        
     }
 
     @Override
@@ -97,24 +109,24 @@ public class ScanActivity extends Activity
             mCamera = null;
         }
     }
-    
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_scan, menu);
         return true;
     }
-    
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent = new Intent();
         switch (item.getItemId()) {
             case R.id.menu_scan_end:
-                intent.setClass(this, ResultActivity.class);
+                intent.setClass(ScanActivity.this, ResultActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.menu_scan_shutter:
-            	//XXX写真撮影処理
-            	mPreview.takePicture();
+            case R.id.menu_setting:
+                intent.setClass(ScanActivity.this,SettingActivity.class);
+                startActivity(intent);
                 break;
         }
         return true;

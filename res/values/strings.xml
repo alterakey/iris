@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">fridger register</string>
+    <string name="app_name">fridge register</string>
     <string name="title">fridger register</string>
-    <string name="menu_settings">Settings</string>
+    <string name="menu_settings">設定</string>
     <string name="title_activity_top">TopActivity</string>
     <string name="barcode">バーコード読み取り</string>
     <string name="refrigartor">冷蔵庫の中へ</string>
@@ -16,5 +16,7 @@
     <string name="menu_scan_shutter">写真撮影</string>
     <string name="title_activity_fridge">FridgeActivity</string>
     <string name="onClick">onClick</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_setting">SettingActivity</string>
 
 </resources>

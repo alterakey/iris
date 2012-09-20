@@ -332,6 +332,7 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
         mCamera.setParameters(parameters);
         mCamera.startPreview();
         requestPreview();
+        requestAutoFocus();
 
     }
 
@@ -506,6 +507,8 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
 
     public void takePicture(){
         requestAutoFocus();
+
+        //XXX1秒待って撮影処理(autofocusが効く前に撮影してしまう為)
         mCamera.takePicture(null,null,mPictureListener);
     }
 
@@ -515,7 +518,7 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
             if(data != null){
                 //画像を保存(data/data/package_name/files)
                 int[] rgb = new int[(mPreviewWidth * mPreviewHeight)];//ARGB8888の画素の配列
-                String itemPhotoName = null;
+                String itemImageName = null;
                 try{
                     //ARGB8888でからのビットマップ作成
                     Bitmap bmp = Bitmap.createBitmap(mPreviewWidth,mPreviewHeight,Bitmap.Config.ARGB_8888);
@@ -524,8 +527,8 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
                     bmp.setPixels(rgb,0,mPreviewWidth,0,0,mPreviewWidth,mPreviewHeight);
                     try{
                         //画像保存処理
-                        itemPhotoName = "iris" + String.valueOf(System.currentTimeMillis()) + ".jpg";
-                        FileOutputStream out = mContext.openFileOutput(itemPhotoName,Context.MODE_WORLD_READABLE);
+                        itemImageName = "iris" + String.valueOf(System.currentTimeMillis()) + ".jpg";
+                        FileOutputStream out = mContext.openFileOutput(itemImageName,Context.MODE_WORLD_READABLE);
                         bmp.compress(Bitmap.CompressFormat.JPEG,100,out);
                         out.close();
                     }catch(Exception e){
@@ -538,7 +541,7 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
                 //画像読み込み(data/data/package_name/files)
                 Bitmap bm = null;
                 try{
-                    FileInputStream in = mContext.openFileInput(itemPhotoName);
+                    FileInputStream in = mContext.openFileInput(itemImageName);
                     BufferedInputStream binput = new BufferedInputStream(in);
                     ByteArrayOutputStream out = new ByteArrayOutputStream();
                     byte[] w = new byte[1024];
@@ -556,6 +559,8 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
                 }
             }
             mCamera.startPreview();
+            requestPreview();
+            requestAutoFocus();
         }
     };
 }
