@@ -24,34 +24,44 @@ public class ResultActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_result);
 
-        List<ResultData> list = new ArrayList<ResultData>();
+    }
+    
+    @Override
+    public void onResume(){
+        super.onResume();
+        
+        List<ResultData> lists = new ArrayList<ResultData>();
         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_search);
         Bitmap cabbage = BitmapFactory.decodeResource(getResources(), R.drawable.cabbage);
 
-        //ScanData scanData = ScanData.getScanData();
-        //Bitmap thumbnail = scanData.thumbnail;
+        ScanData scanData = ScanData.getScanData();
+        Bitmap thumbnail = scanData.thumbnail;
 
-        	for (int i = 0; i<10; i++){
-        		list.add(new ResultData(bm,cabbage,"白菜",String.format("あと%d日", i)));
-        	}
+            for (int i = 0; i<10; i++){
+                if(thumbnail == null){
+                    lists.add(new ResultData(bm,cabbage,"白菜",String.format("あと%d日", i)));
+                }else{
+                    lists.add(new ResultData(thumbnail,cabbage,"白菜",String.format("あと%d日", i)));
+                }
+            }
 
-        	ListView lv = (ListView)findViewById(R.id.result_listView);
-        	lv.setAdapter(new ResultAdapter(this,list));
+            ListView lv = (ListView)findViewById(R.id.result_listView);
+            lv.setAdapter(new ResultAdapter(this,lists));
+            lv.setScrollingCacheEnabled(false);
 
-        	lv.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-				@Override
-				public void onItemClick(AdapterView<?> parent, View view,
-						int position, long id) {
-					// TODO Auto-generated method stub
-					ListView listView = (ListView) parent;
+            lv.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view,
+                    int position, long id) {
+                    // TODO Auto-generated method stub
+                    ListView listView = (ListView) parent;
 
-					Intent intent = new Intent();
-					intent.setClass(ResultActivity.this, DetailActivity.class);
-					startActivity(intent);
-				}
+                    Intent intent = new Intent();
+                    intent.setClass(ResultActivity.this, DetailActivity.class);
+                    startActivity(intent);
+                    }
 
-        	});
-
+            });
     }
 
     @Override
@@ -69,11 +79,11 @@ public class ResultActivity extends Activity {
                 startActivity(intent);
                 break;
             case R.id.menu_fridge:
-            	intent.setClass(ResultActivity.this, FridgeActivity.class);
+                intent.setClass(ResultActivity.this, FridgeActivity.class);
                 startActivity(intent);
                 break;
             case R.id.menu_scan:
-            	intent.setClass(ResultActivity.this, ScanActivity.class);
+                intent.setClass(ResultActivity.this, ScanActivity.class);
                 startActivity(intent);
                 break;
         }

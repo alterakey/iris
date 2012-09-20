@@ -1,5 +1,7 @@
 package jp.co.monolithworks.il.iris;
 
+import java.util.List;
+
 import android.graphics.Bitmap;
 
 public class ScanData {
@@ -7,7 +9,8 @@ public class ScanData {
 
 	public static Bitmap thumbnail;
 	public static String barcode;
-	public static String scanDate;
+	public static String scanData;
+	public static List<ResultData> lists;
 
 	public static ScanData getScanData(){
 		return instance;
