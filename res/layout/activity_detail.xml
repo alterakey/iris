@@ -10,8 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
-        android:layout_marginBottom="10dp"
-        android:src="@android:drawable/sym_def_app_icon" />
+        android:layout_marginBottom="10dp" />
 
     <ImageButton
         android:id="@+id/categoryButton"
@@ -20,7 +19,7 @@
         android:onClick="onClick"
         android:src="@drawable/ic_action_search" />
 
-    <TextView 
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="10dp"

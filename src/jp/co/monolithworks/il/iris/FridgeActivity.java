@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.*;
 import android.view.*;
 import android.widget.*;
+import android.graphics.*;
 
 import java.util.*;
 
@@ -12,10 +13,10 @@ public class FridgeActivity extends Activity {
 
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+        //requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_result);
 
         List<ConsumeLimit_Items> consumelimit_list = new LinkedList<ConsumeLimit_Items>();
-
 
         String[] category_name = {"野菜","肉","魚","加工食品","調味料"};
         String[] consumelimit = {"後１日","後2日","後3日","後4日","後5日"};
@@ -47,6 +48,7 @@ public class FridgeActivity extends Activity {
         }
 
         private class ViewHolder {
+            LinearLayout backcolor;
             ImageView imageview1;
             ImageView imageview2;
             TextView textview1;
@@ -63,6 +65,7 @@ public class FridgeActivity extends Activity {
                 convertView = inflater.inflate(R.layout.result_item, null, false);
                 holder = new ViewHolder();
                 holder.position = position;
+                holder.backcolor = (LinearLayout)findViewById(R.id.item_layout);
                 holder.textview1 = (TextView) convertView.findViewById(R.id.category);
                 holder.textview2 = (TextView) convertView.findViewById(R.id.consumelimit);
                 holder.imageview1 = (ImageView) convertView.findViewById(R.id.thumbnail);
@@ -73,10 +76,25 @@ public class FridgeActivity extends Activity {
                 holder.position = position;
             }
 
+            // switch(position){
+            //case 1:
+            //  holder.backcolor.setBackgroundColor(Color.parseColor("#aa2222"));
+            //  break;
+            //case 2:
+            //  holder.backcolor.setBackgroundColor(Color.parseColor("#33dd72"));
+            //  break;
+            //case 3:
+            //  holder.backcolor.setBackgroundColor(Color.parseColor("#4455bb"));
+            //  break;
+            //case 4:
+            //  holder.backcolor.setBackgroundColor(Color.parseColor("#2222ee"));
+            //  break;
+            //}
+
             holder.textview1.setText(limit_items.category);
             holder.textview2.setText(limit_items.consumelimit);
-            holder.imageview1.setImageResource(android.R.drawable.ic_dialog_alert);
-            holder.imageview2.setImageResource(android.R.drawable.ic_dialog_dialer);
+            holder.imageview1.setImageResource(R.drawable.ncm_0188);
+            holder.imageview2.setImageResource(R.drawable.cabbage);
             //new ImageLoader(holder, position, card).executeParallel();
             return convertView;
         }

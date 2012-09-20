@@ -2,10 +2,9 @@ package jp.co.monolithworks.il.iris;
 
 import android.os.Bundle;
 import android.app.Activity;
-import android.view.Menu;
 import android.content.Intent;
 import android.view.*;
-import android.widget.Toast;
+import android.widget.*;
 
 public class DetailActivity extends Activity {
 
@@ -14,7 +13,20 @@ public class DetailActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_detail);
+
+        WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        int x = display.getWidth() * 8 / 10;
+        int y = x * 6 / 10;
+
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(x,y);
+        lp.setMargins(0,40,0,10);
+
+        ImageView thumb = (ImageView)findViewById(R.id.thumbnail);
+        thumb.setLayoutParams(lp);
+        thumb.setImageResource(R.drawable.ncm_0188);
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -22,7 +34,7 @@ public class DetailActivity extends Activity {
             Bundle extras = intent.getExtras();
             if (extras != null) {
             }
-            Toast.makeText(this, "戻りました。", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "戻りました。", Toast.LENGTH_SHORT).show();
         }
     }
 

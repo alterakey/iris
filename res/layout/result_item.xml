@@ -1,55 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_layout"
     android:layout_width="match_parent"
+    android:background="#20dd44"
     android:layout_height="220dp"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:padding="15dp">
 
     <ImageView
         android:id="@+id/thumbnail"
-        android:layout_width="130dp"
-        android:layout_height="100dp"
-        android:src="@android:drawable/sym_def_app_icon"
-        android:layout_gravity="center" />
+        android:layout_width="120dp"
+        android:layout_height="160dp"
+        android:layout_gravity="center"
+        android:src="@drawable/ncm_0188" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/cabbage" />
 
 	    <LinearLayout
 	        android:layout_width="match_parent"
-	    	android:layout_height="wrap_content"
-	    	android:orientation="horizontal"
-	    	android:gravity="center_vertical"
-	    	android:paddingTop="10dp"
-	    	android:paddingBottom="10dp"  >
-
-	        <ImageView
-	            android:id="@+id/icon"
-        		android:layout_width="wrap_content"
-        		android:layout_height="wrap_content"
-        		android:src="@android:drawable/sym_def_app_icon" />
+	        android:layout_height="match_parent"
+	        android:orientation="vertical"
+	        android:gravity="center_vertical"
+	        android:paddingBottom="10dp"
+	        android:paddingTop="10dp" >
 
 	        <TextView
 	            android:id="@+id/category"
-        		android:layout_width="wrap_content"
-        		android:layout_height="wrap_content"
-        		android:textSize="18sp"
-        		android:text="カテゴリ名" />
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="カテゴリ名"
+	            android:textSize="18sp"
+	            android:textColor="#000000" />
 
-	    </LinearLayout>
 	    <LinearLayout
 		android:layout_width="match_parent"
 	    	android:layout_height="wrap_content"
 	    	android:orientation="horizontal"
+	    	android:layout_marginTop="20dp"
 	    	android:gravity="center_vertical">
 	    
 		<TextView
 	    	android:layout_width="wrap_content"
 	    	android:layout_height="wrap_content"
 	    	android:textSize="18sp"
+	    	android:textColor="#000000"
 	    	android:text="消費期限" 
 	    	android:layout_weight="0.8"/>
 				
 		<TextView
 	    	android:layout_width="wrap_content"
 	    	android:layout_height="wrap_content"
+	    	android:textColor="#000000"
 	    	android:id="@+id/consumelimit"
 	    	android:textSize="18sp"
 	    	android:text="3日" 
@@ -57,6 +66,9 @@
 	    	android:layout_weight="0.2"/>
 		
 		</LinearLayout>
+		
+	    </LinearLayout>
 
+    </FrameLayout>
 
 </LinearLayout>
