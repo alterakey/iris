@@ -12,7 +12,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ArrayAdapter;
 
@@ -23,6 +25,16 @@ public class ResultActivity extends Activity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_result);
+        
+        Button scanButton = (Button)findViewById(R.id.scan_button);
+        scanButton.setOnClickListener(new OnClickListener(){
+        	@Override
+        	public void onClick(View v){
+        		Intent intent = new Intent();
+        		intent.setClass(ResultActivity.this,ScanActivity.class);
+        		startActivity(intent);
+        	}
+        });
 
     }
     

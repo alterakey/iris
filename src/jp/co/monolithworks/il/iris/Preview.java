@@ -18,6 +18,8 @@ import android.os.Vibrator;
 import android.media.ToneGenerator;
 import android.media.AudioManager;
 import android.widget.ImageView;
+
+import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.FileNotFoundException;
@@ -65,8 +67,6 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
     private int mHeight;
     private int mPreviewWidth;
     private int mPreviewHeight;
-
-    private byte[] mData;
     
     //シングルトン
     private RectFactory mRectFactory = RectFactory.getRectFactory();
@@ -272,7 +272,7 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
     private Size getOptimalPreviewSize(List<Size> sizes, int w, int h) {
         //アスペクト比で判定
         //final double ASPECT_TOLERANCE = 0.1;//標準
-        final double ASPECT_TOLERANCE = 0.15;//緩くした
+        final double ASPECT_TOLERANCE = 0.2;//緩くした
         double targetRatio = (double) w / h;
         if (sizes == null) return null;
 
@@ -466,7 +466,7 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
                 	
                 }
                 mCamera.takePicture(null,null,mPictureListener);
-            };
+            }
          });
          trd.start();
     }
@@ -476,11 +476,11 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
 
             if(data != null){
                 
-            	//String itemImageName = saveBitmap(data);
-            	//Bitmap bmp = readBitmap(itemImageName);
+                //String itemImageName = saveBitmap(data);
+                //Bitmap bmp = readBitmap(itemImageName);
 
-            	Bitmap bmp = BitmapFactory.decodeByteArray(data,0,data.length,null);
-            	
+                Bitmap bmp = BitmapFactory.decodeByteArray(data,0,data.length,null);
+            
                 //Log.w("ScanActivity","itemImageName:"+itemImageName);
                 Log.w("ScanActivity","mPreviewWidth"+mPreviewWidth);
                 Log.w("ScanActivity","mPreviewHeight"+mPreviewHeight);
@@ -512,24 +512,29 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
         int[] rgb = new int[(mPreviewWidth * mPreviewHeight)];//ARGB8888の画素の配列
         String fileName = null;
         Bitmap bmp=null;
-        try{
-            //ARGB8888でからのビットマップ作成
-            bmp = Bitmap.createBitmap(mPreviewWidth,mPreviewHeight,Bitmap.Config.ARGB_8888);
-            mDecoder.decodeYUV420SP(rgb,data,mPreviewWidth,mPreviewHeight);//変換
-            //変換した画素からビットマップにセット
-            bmp.setPixels(rgb,0,mPreviewWidth,0,0,mPreviewWidth,mPreviewHeight);
-            try{
-                //画像保存処理
-                fileName = "iris" + String.valueOf(System.currentTimeMillis()) + ".jpg";
-                FileOutputStream out = mContext.openFileOutput(fileName,Context.MODE_WORLD_READABLE);
-                bmp.compress(Bitmap.CompressFormat.JPEG,100,out);
-                out.close();
-            }catch(Exception e){
-                Log.w("ScanActivity","itemPhoto save Exception");
-            }
-        }catch(Exception e){
-            Log.w("ScanActivity","itemPhoto create Exception");
-        }
+        
+        fileName = "iris" + String.valueOf(System.currentTimeMillis()) + ".jpg";
+        
+        Log.w("ScanActivity","mPreviewWidth"+mPreviewWidth);
+        Log.w("ScanActivity","mPreviewHeight"+mPreviewHeight);
+
+	        try{
+	            //ARGB8888でからのビットマップ作成
+	            bmp = Bitmap.createBitmap(mPreviewWidth,mPreviewHeight,Bitmap.Config.ARGB_8888);
+	            mDecoder.decodeYUV420SP(rgb,data,mPreviewWidth,mPreviewHeight);//変換
+	            //変換した画素からビットマップにセット
+	            bmp.setPixels(rgb,0,mPreviewWidth,0,0,mPreviewWidth,mPreviewHeight);
+	            try{
+	                //画像保存処理
+	                FileOutputStream out = mContext.openFileOutput(fileName,Context.MODE_WORLD_READABLE);
+	                bmp.compress(Bitmap.CompressFormat.JPEG,100,out);
+	                out.close();
+	            }catch(Exception e){
+	                Log.w("ScanActivity","itemPhoto save Exception");
+	            }
+	        }catch(Exception e){
+	            Log.w("ScanActivity","itemPhoto create Exception");
+	        }
         return fileName;
     }
     
