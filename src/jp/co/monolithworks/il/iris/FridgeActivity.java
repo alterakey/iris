@@ -6,25 +6,28 @@ import android.content.*;
 import android.view.*;
 import android.widget.*;
 import android.graphics.*;
+import android.util.*;
 
 import java.util.*;
 
 public class FridgeActivity extends Activity {
 
+    private List<ConsumeLimit_Items> consumelimit_list;
+
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        //requestWindowFeature(Window.FEATURE_NO_TITLE);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_result);
         Button b = (Button)findViewById(R.id.scan_button);
         b.setVisibility(View.GONE);
-        TextView tv = (TextView)findViewById(R.id.listview_empty);
-        tv.setVisibility(View.GONE);
 
-        List<ConsumeLimit_Items> consumelimit_list = new LinkedList<ConsumeLimit_Items>();
+        consumelimit_list = new LinkedList<ConsumeLimit_Items>();
+        item_read();
+        setListView();
 
-        String[] category_name = {"野菜","肉","魚","加工食品","調味料"};
-        String[] consumelimit = {"後１日","後2日","後3日","後4日","後5日"};
+    }
 
+    private void item_read(){
         DB db = new DB(this);
         List<Map<String,String>> items = db.query();
 
@@ -32,11 +35,40 @@ public class FridgeActivity extends Activity {
             ConsumeLimit_Items ci = new ConsumeLimit_Items();
             ci.category = item.get("category_name");
             ci.consumelimit = item.get("consume_limit");
+            ci.jan_code = item.get("jan_code");
             consumelimit_list.add(ci);
         }
+    }
 
-        ListView lv = (ListView)findViewById(R.id.result_listView);
-        lv.setAdapter(new LimitAdapter(this,consumelimit_list));
+    private void setListView(){
+        final TextView tv = (TextView)findViewById(R.id.listview_empty);
+
+        if(consumelimit_list.size() != 0){
+            tv.setVisibility(View.GONE);
+            ListView lv = (ListView)findViewById(R.id.result_listView);
+            lv.setAdapter(new LimitAdapter(this,consumelimit_list));
+            lv.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
+                    ListView listView = (ListView) parent;
+                    ConsumeLimit_Items item = consumelimit_list.get(position);
+                    String[] code = {item.jan_code};
+                    DB db = new DB(FridgeActivity.this);
+                    db.delete(code);
+                    item_read();
+                    consumelimit_list.remove(position);
+                    if(consumelimit_list.size() != 0){
+                        listView.setAdapter(new LimitAdapter(FridgeActivity.this,consumelimit_list));
+                    }else{
+                        tv.setText("冷蔵庫の中にはぞうが入っています。");
+                        tv.setVisibility(View.VISIBLE);
+                    }
+                }
+            });
+        }else{
+            tv.setText("冷蔵庫の中にはぞうが入っています。");
+            tv.setVisibility(View.VISIBLE);
+        }
     }
 
     private class LimitAdapter extends ArrayAdapter<ConsumeLimit_Items> {
@@ -110,6 +142,7 @@ public class FridgeActivity extends Activity {
     private class ConsumeLimit_Items{
         String category;
         String consumelimit;
+        String jan_code;
         ImageView thumb;
         ImageView icon;
 
@@ -127,6 +160,10 @@ public class FridgeActivity extends Activity {
 
         public String getConsumeLimit(){
             return consumelimit;
+        }
+
+        public String getJan_code(){
+            return jan_code;
         }
 
         public ImageView getThumb(){
@@ -150,8 +187,8 @@ public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
         case R.id.menu_settings:
-            //intent.setClass(this, SettingActivity.class);
-            //startActivity(intent);
+            intent.setClass(this, SettingActivity.class);
+            startActivity(intent);
             break;
         case R.id.menu_delete:
             intent.setClass(this, DetailActivity.class);

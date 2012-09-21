@@ -31,11 +31,10 @@ public class DetailActivity extends Activity {
 
         mResultData = (ResultData)FridgeRegister.getState().get(ResultActivity.SELECTED_ITEM_KEY);
         FridgeRegister.getState().remove(ResultActivity.SELECTED_ITEM_KEY);
-        
+
         Bitmap bmp = mResultData.thumbnailBitmap;
         ImageView thumb = (ImageView)findViewById(R.id.thumbnail);
         thumb.setLayoutParams(lp);
-        //thumb.setImageResource(R.drawable.ncm_0188);
         thumb.setImageBitmap(bmp);
     }
 
@@ -67,7 +66,7 @@ public class DetailActivity extends Activity {
 
         String jan_code = mResultData.categoryText;
         String bar_code = mResultData.thumbnailFileName;
-        
+
         Toast.makeText(this, "database insert jan_code:"+jan_code, Toast.LENGTH_SHORT).show();
 
 	    ContentValues values = new ContentValues();

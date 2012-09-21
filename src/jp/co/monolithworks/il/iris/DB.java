@@ -18,24 +18,10 @@ public class DB{
 
     public DB(Context context){
         mContext = context;
-        Log.v("test"," " + mContext);
         DBHelper dh = new DBHelper(mContext);
         mDb = dh.getWritableDatabase();
     }
 
-    public void insert(Map<String,String> data){
-        Object[] fields = {data.get("jan_code"),data.get("category_name"),data.get("category_icon"),data.get("bar_code"),data.get("consume_limit")};
-        //String query = "INSERT OR IGNORE INTO fridge (jan_code,category_name,category_icon,bar_code,consume_limit) VALUES (?,?,?,?,?)",fields;
-        try{
-            mDb.execSQL("BEGIN");
-            mDb.execSQL("INSERT OR IGNORE INTO fridge (jan_code,category_name,category_icon,bar_code,consume_limit) VALUES (?,?,?,?,?)",fields);
-        }catch(SQLiteException e){
-            throw e;
-        }finally{
-            cleanup();
-        }
-    }
-    
     public void insert(ContentValues data){
         try{
             long ret = mDb.insert("fridge_table", null, data);
@@ -61,13 +47,24 @@ public class DB{
                 item.put("consume_limit",c.getString(4));
                 items.add(item);
             }
-            return items;
         }catch(SQLiteException e){
             throw e;
         }finally {
             if(c != null){
                 c.close();
             }
+            cleanup();
+            return items;
+        }
+    }
+
+    public void delete(String[] jan_codes){
+        try{
+            String str = "jan_code=?";
+            int i = mDb.delete("fridge_table",str,jan_codes);
+        }catch(SQLiteException e){
+            throw e;
+        }finally{
             cleanup();
         }
     }
