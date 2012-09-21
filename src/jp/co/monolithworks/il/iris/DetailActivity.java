@@ -15,7 +15,7 @@ public class DetailActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //requestWindowFeature(Window.FEATURE_NO_TIdataTLE);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_detail);
 
         WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
@@ -28,7 +28,7 @@ public class DetailActivity extends Activity {
 
         ImageView thumb = (ImageView)findViewById(R.id.thumbnail);
         thumb.setLayoutParams(lp);
-        thumb.setImageResource(R.drawable.ncm_0188);
+        thumb.setImageBitmap(ScanData.getScanData().thumbnail);
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -46,7 +46,7 @@ public class DetailActivity extends Activity {
             intent.setClass(this,CategoryActivity.class);
             startActivityForResult(intent,REQUEST_ITEM);
         }else if(v.getId() == R.id.okButton){
-        	register();
+            register();
             intent.setClass(this,ResultActivity.class);
             startActivity(intent);
         }else if(v.getId() == R.id.cancelButton){
@@ -54,7 +54,7 @@ public class DetailActivity extends Activity {
             startActivity(intent);
         }
     }
-    
+
     private void register(){
 
 	    ContentValues values = new ContentValues();
@@ -67,8 +67,7 @@ public class DetailActivity extends Activity {
 	    db.insert(values);
     }
 
-
-	@Override
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_detail, menu);
         return true;
