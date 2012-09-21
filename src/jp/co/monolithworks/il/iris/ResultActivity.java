@@ -5,9 +5,13 @@ import java.util.List;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,6 +21,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 public class ResultActivity extends Activity {
 
@@ -37,6 +42,32 @@ public class ResultActivity extends Activity {
                 startActivity(intent);
             }
         });
+        
+        Log.w("resultActivity","onCreate");
+        
+        DatabaseHelper dbHelper = new DatabaseHelper(this);
+	    SQLiteDatabase db = dbHelper.getWritableDatabase();
+	    ContentValues values = new ContentValues();
+	    values.put("jan_code", "123");
+	    values.put("category_name","たまご");
+	    values.put("category_icon", "123.jpg");
+	    values.put("barcode", "321.jpg");
+	    values.put("consume_limit", "3");
+	        
+	    long ret;
+	    try{
+	        ret = db.insert("fridge_table", null, values);
+	    }finally{
+	        db.close();
+	    }
+	        
+	    if(ret == -1){
+	        Toast.makeText(this,"Insert失敗",Toast.LENGTH_SHORT).show();
+	         Log.w("resultActivity","Insert失敗");
+	    }else{
+	        Toast.makeText(this,"Insert成功",Toast.LENGTH_SHORT).show();
+	        Log.w("resultActivity","Insert成功");
+	    }
     }
     
     @Override
