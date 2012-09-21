@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import java.util.*;
+
 import android.content.Context;
 import java.io.IOException;
 import android.util.Log;
@@ -68,6 +69,8 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
     private int mPreviewWidth;
     private int mPreviewHeight;
     
+    private List<ResultData> lists;
+    
     //シングルトン
     private RectFactory mRectFactory = RectFactory.getRectFactory();
     private ScanData mScanData = ScanData.getScanData();
@@ -91,6 +94,9 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
         //surfaceViewのtypeを設定
         //ARの場合は、「SURFACE_TYPE_NORMAL」を使用
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        
+        lists = new ArrayList<ResultData>();
+        
     }
     //アプリケーションからコントロールに対してカメラをセット
     public void setCamera(Camera camera) {
@@ -420,9 +426,10 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
                 Bitmap bmp = readBitmap(barcodeImageName);
                 
                 if(bmp != null){
-                	mScanData.thumbnail = bmp;
-                	mScanData.barcode = String.format("%s",format);
-                	mScanData.barcode = contents;
+                	Bitmap cabbage = BitmapFactory.decodeResource(getResources(), R.drawable.cabbage);
+                    ResultData resultData = new ResultData(bmp,cabbage,contents,"あと3日");
+                    lists.add(resultData);
+                    mScanData.lists = lists;
                 }
 
                 //トースト表示
@@ -486,9 +493,11 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
                 Log.w("ScanActivity","mPreviewHeight"+mPreviewHeight);
                 
                 if(bmp != null){
-                    mScanData.thumbnail = bmp;
-                    mScanData.barcode = null;
-                    mScanData.barcode = null;
+                	String contents = "その他";
+                    Bitmap cabbage = BitmapFactory.decodeResource(getResources(), R.drawable.cabbage);
+                    ResultData resultData = new ResultData(bmp,cabbage,contents,"不明");
+                    lists.add(resultData);
+                    mScanData.lists = lists;
                 }
                 
                 //トースト表示

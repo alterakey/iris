@@ -20,6 +20,8 @@ import android.widget.ArrayAdapter;
 
 public class ResultActivity extends Activity {
 
+    private ScanData mScanData;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,20 +30,20 @@ public class ResultActivity extends Activity {
         
         Button scanButton = (Button)findViewById(R.id.scan_button);
         scanButton.setOnClickListener(new OnClickListener(){
-        	@Override
-        	public void onClick(View v){
-        		Intent intent = new Intent();
-        		intent.setClass(ResultActivity.this,ScanActivity.class);
-        		startActivity(intent);
-        	}
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent();
+                intent.setClass(ResultActivity.this,ScanActivity.class);
+                startActivity(intent);
+            }
         });
-
     }
     
     @Override
     public void onResume(){
         super.onResume();
         
+        mScanData = ScanData.getScanData();
         List<ResultData> lists = new ArrayList<ResultData>();
         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_search);
         Bitmap cabbage = BitmapFactory.decodeResource(getResources(), R.drawable.cabbage);
@@ -49,31 +51,29 @@ public class ResultActivity extends Activity {
         ScanData scanData = ScanData.getScanData();
         Bitmap thumbnail = scanData.thumbnail;
 
-            for (int i = 0; i<10; i++){
-                if(thumbnail == null){
-                    lists.add(new ResultData(bm,cabbage,"白菜",String.format("あと%d日", i)));
-                }else{
-                    lists.add(new ResultData(thumbnail,cabbage,"白菜",String.format("あと%d日", i)));
+        if(mScanData.lists!=null){
+            lists = mScanData.lists;
+        }
+        
+        ListView lv = (ListView)findViewById(R.id.result_listView);
+        lv.setAdapter(new ResultAdapter(this,lists));
+        lv.setScrollingCacheEnabled(false);
+
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                int position, long id) {
+                // TODO Auto-generated method stub
+                ListView listView = (ListView) parent;
+
+                Intent intent = new Intent();
+                intent.setClass(ResultActivity.this, DetailActivity.class);
+                startActivity(intent);
                 }
-            }
-
-            ListView lv = (ListView)findViewById(R.id.result_listView);
-            lv.setAdapter(new ResultAdapter(this,lists));
-            lv.setScrollingCacheEnabled(false);
-
-            lv.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view,
-                    int position, long id) {
-                    // TODO Auto-generated method stub
-                    ListView listView = (ListView) parent;
-
-                    Intent intent = new Intent();
-                    intent.setClass(ResultActivity.this, DetailActivity.class);
-                    startActivity(intent);
-                    }
-
-            });
+        });
+        
+        View emptyView = (View)findViewById(R.id.listview_empty);
+        lv.setEmptyView(emptyView);
     }
 
     @Override

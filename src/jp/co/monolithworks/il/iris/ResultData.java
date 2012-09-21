@@ -12,5 +12,12 @@ public class ResultData {
         this.categoryText = categoryText;
         this.consumelimitText = consumelimitText;
     }
+    
+    public ResultData(Bitmap thumbnailBitmap,String categoryText){
+        this.thumbnailBitmap = thumbnailBitmap;
+        this.iconBitmap = iconBitmap;
+        this.categoryText = categoryText;
+        this.consumelimitText = consumelimitText;
+    }
 
 }

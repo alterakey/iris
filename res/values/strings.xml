@@ -25,5 +25,6 @@
     <string name="title_activity_setting">SettingActivity</string>
     <string name="app_version">0.0.1</string>
     <string name="setting_title_version">fridge register</string>
+    <string name="listview_empty">商品がありません。登録してください。</string>
 
 </resources>
