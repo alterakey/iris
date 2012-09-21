@@ -5,8 +5,8 @@
     <string name="title">fridger register</string>
     <string name="menu_settings">設定</string>
     <string name="title_activity_top">TopActivity</string>
-    <string name="barcode">バーコード読み取り</string>
-    <string name="refrigartor">冷蔵庫の中へ</string>
+    <string name="barcode">スキャン</string>
+    <string name="refrigartor">冷蔵庫</string>
     <string name="title_activity_detail">DetailActivity</string>
     <string name="category">カテゴリ選択</string>
     <string name="register">OK!</string>
@@ -18,10 +18,8 @@
     <string name="onClick">onClick</string>
     <string name="cancel">Cancel</string>
     <string name="categoryselect">カテゴリを選択してください。</string>
-    <string name="menu_fridge_scan">読み取り</string>
     <string name="menu_fridge_delete">削除</string>
     <string name="menu_detail_fridge">XXX</string>
-    <string name="hello_world">Hello world!</string>
     <string name="title_activity_setting">SettingActivity</string>
     <string name="app_version">0.0.1</string>
     <string name="setting_title_version">fridge register</string>
