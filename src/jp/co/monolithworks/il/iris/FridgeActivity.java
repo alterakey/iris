@@ -15,6 +15,10 @@ public class FridgeActivity extends Activity {
         super.onCreate(savedInstanceState);
         //requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_result);
+        Button b = (Button)findViewById(R.id.scan_button);
+        b.setVisibility(View.GONE);
+        TextView tv = (TextView)findViewById(R.id.listview_empty);
+        tv.setVisibility(View.GONE);
 
         List<ConsumeLimit_Items> consumelimit_list = new LinkedList<ConsumeLimit_Items>();
 
@@ -23,7 +27,7 @@ public class FridgeActivity extends Activity {
 
         DB db = new DB(this);
         List<Map<String,String>> items = db.query();
-        
+
         for(Map<String,String> item : items){
             ConsumeLimit_Items ci = new ConsumeLimit_Items();
             ci.category = item.get("category_name");

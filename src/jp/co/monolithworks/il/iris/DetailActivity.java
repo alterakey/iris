@@ -18,7 +18,7 @@ public class DetailActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //requestWindowFeature(Window.FEATURE_NO_TIdataTLE);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_detail);
 
         WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
@@ -54,7 +54,7 @@ public class DetailActivity extends Activity {
             intent.setClass(this,CategoryActivity.class);
             startActivityForResult(intent,REQUEST_ITEM);
         }else if(v.getId() == R.id.okButton){
-        	register();
+            register();
             intent.setClass(this,ResultActivity.class);
             startActivity(intent);
         }else if(v.getId() == R.id.cancelButton){
@@ -62,7 +62,7 @@ public class DetailActivity extends Activity {
             startActivity(intent);
         }
     }
-    
+
     private void register(){
 
         String jan_code = mResultData.categoryText;
@@ -80,8 +80,7 @@ public class DetailActivity extends Activity {
 	    db.insert(values);
     }
 
-
-	@Override
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_detail, menu);
         return true;
