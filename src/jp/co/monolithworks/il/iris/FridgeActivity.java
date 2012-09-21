@@ -21,10 +21,13 @@ public class FridgeActivity extends Activity {
         String[] category_name = {"野菜","肉","魚","加工食品","調味料"};
         String[] consumelimit = {"後１日","後2日","後3日","後4日","後5日"};
 
-        for(int i = 0;i < 5 ; ++i){
+        DB db = new DB(this);
+        List<Map<String,String>> items = db.query();
+        
+        for(Map<String,String> item : items){
             ConsumeLimit_Items ci = new ConsumeLimit_Items();
-            ci.category = category_name[i];
-            ci.consumelimit = consumelimit[i];
+            ci.category = item.get("category_name");
+            ci.consumelimit = item.get("consume_limit");
             consumelimit_list.add(ci);
         }
 

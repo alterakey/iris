@@ -2,6 +2,8 @@ package jp.co.monolithworks.il.iris;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Context;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.view.*;
 import android.widget.*;
@@ -13,7 +15,7 @@ public class DetailActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //requestWindowFeature(Window.FEATURE_NO_TIdataTLE);
         setContentView(R.layout.activity_detail);
 
         WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
@@ -44,6 +46,7 @@ public class DetailActivity extends Activity {
             intent.setClass(this,CategoryActivity.class);
             startActivityForResult(intent,REQUEST_ITEM);
         }else if(v.getId() == R.id.okButton){
+        	register();
             intent.setClass(this,ResultActivity.class);
             startActivity(intent);
         }else if(v.getId() == R.id.cancelButton){
@@ -51,8 +54,21 @@ public class DetailActivity extends Activity {
             startActivity(intent);
         }
     }
+    
+    private void register(){
 
-    @Override
+	    ContentValues values = new ContentValues();
+	    values.put("jan_code", "123");
+	    values.put("category_name","たまご");
+	    values.put("category_icon", "123.jpg");
+	    values.put("bar_code", "321.jpg");
+	    values.put("consume_limit", "3");
+	    DB db = new DB(this);
+	    db.insert(values);
+    }
+
+
+	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_detail, menu);
         return true;

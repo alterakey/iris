@@ -32,7 +32,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sql += ",jan_code text ";
         sql += ",category_name text";
         sql += ",category_icon text";
-        sql += ",barcode text";
+        sql += ",bar_code text";
         sql += ",consume_limit text";
         sql += ")";
         db.execSQL(sql);

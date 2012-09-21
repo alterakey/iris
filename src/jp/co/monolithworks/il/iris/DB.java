@@ -2,6 +2,7 @@ package jp.co.monolithworks.il.iris;
 
 import android.database.*;
 import android.database.sqlite.*;
+import android.content.ContentValues;
 import android.content.Context;
 import android.app.Application;
 import android.widget.*;
@@ -32,6 +33,16 @@ public class DB{
             throw e;
         }finally{
             cleanup();
+        }
+    }
+    
+    public void insert(ContentValues data){
+        try{
+            long ret = mDb.insert("fridge_table", null, data);
+        }catch(SQLiteException e){
+            throw e;
+        }finally{
+        	cleanup();
         }
     }
 
@@ -79,8 +90,9 @@ public class DB{
         @Override
         public void onCreate(SQLiteDatabase db){
             String str;
-            str = "create table fridge ";
-            str += "(id integer primarykey autoincrement";
+            str = "create table fridge_table ";
+            str += "(id integer primary key autoincrement";
+            str += ",jan_code text";
             str += ",category_name text";
             str += ",category_icon text";
             str += ",bar_code text";

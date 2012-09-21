@@ -1,14 +1,19 @@
 package jp.co.monolithworks.il.iris;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
@@ -26,7 +31,7 @@ import android.widget.Toast;
 public class ResultActivity extends Activity {
 
     private ScanData mScanData;
-
+    SQLiteDatabase mDb;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,30 +49,7 @@ public class ResultActivity extends Activity {
         });
         
         Log.w("resultActivity","onCreate");
-        
-        DatabaseHelper dbHelper = new DatabaseHelper(this);
-	    SQLiteDatabase db = dbHelper.getWritableDatabase();
-	    ContentValues values = new ContentValues();
-	    values.put("jan_code", "123");
-	    values.put("category_name","たまご");
-	    values.put("category_icon", "123.jpg");
-	    values.put("barcode", "321.jpg");
-	    values.put("consume_limit", "3");
-	        
-	    long ret;
-	    try{
-	        ret = db.insert("fridge_table", null, values);
-	    }finally{
-	        db.close();
-	    }
-	        
-	    if(ret == -1){
-	        Toast.makeText(this,"Insert失敗",Toast.LENGTH_SHORT).show();
-	         Log.w("resultActivity","Insert失敗");
-	    }else{
-	        Toast.makeText(this,"Insert成功",Toast.LENGTH_SHORT).show();
-	        Log.w("resultActivity","Insert成功");
-	    }
+
     }
     
     @Override
