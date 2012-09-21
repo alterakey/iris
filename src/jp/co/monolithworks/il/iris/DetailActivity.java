@@ -5,12 +5,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.*;
 import android.widget.*;
 
 public class DetailActivity extends Activity {
 
     private final static int REQUEST_ITEM = 0;
+    private ResultData mResultData;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -26,9 +29,14 @@ public class DetailActivity extends Activity {
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(x,y);
         lp.setMargins(0,40,0,10);
 
+        mResultData = (ResultData)FridgeRegister.getState().get(ResultActivity.SELECTED_ITEM_KEY);
+        FridgeRegister.getState().remove(ResultActivity.SELECTED_ITEM_KEY);
+        
+        Bitmap bmp = mResultData.thumbnailBitmap;
         ImageView thumb = (ImageView)findViewById(R.id.thumbnail);
         thumb.setLayoutParams(lp);
-        thumb.setImageResource(R.drawable.ncm_0188);
+        //thumb.setImageResource(R.drawable.ncm_0188);
+        thumb.setImageBitmap(bmp);
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -57,11 +65,16 @@ public class DetailActivity extends Activity {
     
     private void register(){
 
+        String jan_code = mResultData.categoryText;
+        String bar_code = mResultData.thumbnailFileName;
+        
+        Toast.makeText(this, "database insert jan_code:"+jan_code, Toast.LENGTH_SHORT).show();
+
 	    ContentValues values = new ContentValues();
-	    values.put("jan_code", "123");
+	    values.put("jan_code", jan_code);
 	    values.put("category_name","たまご");
 	    values.put("category_icon", "123.jpg");
-	    values.put("bar_code", "321.jpg");
+	    values.put("bar_code", bar_code);
 	    values.put("consume_limit", "3");
 	    DB db = new DB(this);
 	    db.insert(values);

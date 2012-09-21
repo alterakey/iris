@@ -9,6 +9,7 @@ import java.util.Map;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -24,6 +25,7 @@ import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
@@ -31,7 +33,12 @@ import android.widget.Toast;
 public class ResultActivity extends Activity {
 
     private ScanData mScanData;
-    SQLiteDatabase mDb;
+    private SQLiteDatabase mDb;
+    List<ResultData> mLists;
+    public static final String SELECTED_ITEM_KEY = "ResultActivity_item_selected";
+    
+    private Context mContext = this;
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,19 +64,16 @@ public class ResultActivity extends Activity {
         super.onResume();
         
         mScanData = ScanData.getScanData();
-        List<ResultData> lists = new ArrayList<ResultData>();
+        mLists = new ArrayList<ResultData>();
         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_search);
         Bitmap cabbage = BitmapFactory.decodeResource(getResources(), R.drawable.cabbage);
 
-        ScanData scanData = ScanData.getScanData();
-        Bitmap thumbnail = scanData.thumbnail;
-
         if(mScanData.lists!=null){
-            lists = mScanData.lists;
+            mLists = mScanData.lists;
         }
         
         ListView lv = (ListView)findViewById(R.id.result_listView);
-        lv.setAdapter(new ResultAdapter(this,lists));
+        lv.setAdapter(new ResultAdapter(this,mLists));
         lv.setScrollingCacheEnabled(false);
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener(){
@@ -82,6 +86,8 @@ public class ResultActivity extends Activity {
                 Intent intent = new Intent();
                 intent.setClass(ResultActivity.this, DetailActivity.class);
                 startActivity(intent);
+                
+                FridgeRegister.getState().put(SELECTED_ITEM_KEY,mLists.get(position));
                 }
         });
         

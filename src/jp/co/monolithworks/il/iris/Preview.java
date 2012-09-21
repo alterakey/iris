@@ -427,7 +427,7 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
                 
                 if(bmp != null){
                 	Bitmap cabbage = BitmapFactory.decodeResource(getResources(), R.drawable.cabbage);
-                    ResultData resultData = new ResultData(bmp,cabbage,contents,"あと3日");
+                    ResultData resultData = new ResultData(bmp,cabbage,contents,"あと3日",barcodeImageName);
                     lists.add(resultData);
                     mScanData.lists = lists;
                 }
@@ -485,7 +485,7 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
                 
                 //String itemImageName = saveBitmap(data);
                 //Bitmap bmp = readBitmap(itemImageName);
-
+                //XXXファイル保存処理
                 Bitmap bmp = BitmapFactory.decodeByteArray(data,0,data.length,null);
             
                 //Log.w("ScanActivity","itemImageName:"+itemImageName);
