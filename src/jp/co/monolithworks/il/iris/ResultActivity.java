@@ -34,17 +34,20 @@ public class ResultActivity extends Activity {
 
     private ScanData mScanData;
     private SQLiteDatabase mDb;
-    List<ResultData> mLists;
+    private List<ResultData> mLists;
+    private final int POSITION_NOT_DELETE = -1;
     public static final String SELECTED_ITEM_KEY = "ResultActivity_item_selected";
-    
+    public static final String SELECTED_ITEM_DELETE_KEY = "ResultActivity_item_delete";
+    public static final String SELECTED_ADAPTER_DELETE_KEY = "ResultActivity_adapter_delete";
+
     private Context mContext = this;
-    
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_result);
-        
+
         Button scanButton = (Button)findViewById(R.id.scan_button);
         scanButton.setOnClickListener(new OnClickListener(){
             @Override
@@ -54,15 +57,15 @@ public class ResultActivity extends Activity {
                 startActivity(intent);
             }
         });
-        
+
         Log.w("resultActivity","onCreate");
 
     }
-    
+
     @Override
     public void onResume(){
         super.onResume();
-        
+
         mScanData = ScanData.getScanData();
         mLists = new ArrayList<ResultData>();
         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_search);
@@ -70,9 +73,33 @@ public class ResultActivity extends Activity {
 
         if(mScanData.lists!=null){
             mLists = mScanData.lists;
+            Log.w("resultActivity","mList is not null");
+        }else{
+           Log.w("resultActivity","mList is null");
         }
-        
+
         ListView lv = (ListView)findViewById(R.id.result_listView);
+
+        int position = POSITION_NOT_DELETE;
+        Bundle extras = getIntent().getExtras();
+        if(extras != null){
+            position = extras.getInt("listDeletePosition");
+        }
+
+        if(position == POSITION_NOT_DELETE){
+            lv.setAdapter(new ResultAdapter(this,mLists));
+            Log.w("resultActivity","position is POSITION_NOT_DELETE");
+        }else{
+            ArrayAdapter<ResultData> adapter  = (ArrayAdapter<ResultData>)FridgeRegister.getState().get(ResultActivity.SELECTED_ADAPTER_DELETE_KEY);
+            FridgeRegister.getState().remove(ResultActivity.SELECTED_ADAPTER_DELETE_KEY);
+            ResultData item  = (ResultData)FridgeRegister.getState().get(ResultActivity.SELECTED_ITEM_DELETE_KEY);
+            FridgeRegister.getState().remove(ResultActivity.SELECTED_ITEM_DELETE_KEY);
+            adapter.remove(item);
+            lv.setAdapter(adapter);
+            lv.invalidateViews();
+            Log.w("resultActivity","position is not POSITION_NOT_DELETE");
+        }
+
         lv.setAdapter(new ResultAdapter(this,mLists));
         lv.setScrollingCacheEnabled(false);
 
@@ -83,14 +110,20 @@ public class ResultActivity extends Activity {
                 // TODO Auto-generated method stub
                 ListView listView = (ListView) parent;
 
+                ResultData item = (ResultData)listView.getItemAtPosition(position);
+                ArrayAdapter<ResultData> adapter = (ArrayAdapter<ResultData>)listView.getAdapter();
+
                 Intent intent = new Intent();
                 intent.setClass(ResultActivity.this, DetailActivity.class);
                 startActivity(intent);
-                
+
                 FridgeRegister.getState().put(SELECTED_ITEM_KEY,mLists.get(position));
+                FridgeRegister.getState().put(SELECTED_ADAPTER_DELETE_KEY,adapter);
+                FridgeRegister.getState().put(SELECTED_ITEM_DELETE_KEY,item);
+                FridgeRegister.setListPosition(position);
                 }
         });
-        
+
         View emptyView = (View)findViewById(R.id.listview_empty);
         lv.setEmptyView(emptyView);
     }
