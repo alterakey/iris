@@ -13,6 +13,7 @@ import android.widget.*;
 public class DetailActivity extends Activity {
 
     private final static int REQUEST_ITEM = 0;
+    private final int POSITION_INITIALIZE = -1;
     private ResultData mResultData;
 
     @Override
@@ -54,7 +55,8 @@ public class DetailActivity extends Activity {
             intent.setClass(this,CategoryActivity.class);
             startActivityForResult(intent,REQUEST_ITEM);
         }else if(v.getId() == R.id.okButton){
-            register();
+            int position = register();
+            intent.putExtra("listDeletePosition", position);
             intent.setClass(this,ResultActivity.class);
             startActivity(intent);
         }else if(v.getId() == R.id.cancelButton){
@@ -63,7 +65,7 @@ public class DetailActivity extends Activity {
         }
     }
 
-    private void register(){
+    private int register(){
 
         String jan_code = mResultData.categoryText;
         String bar_code = mResultData.thumbnailFileName;
@@ -78,6 +80,11 @@ public class DetailActivity extends Activity {
 	    values.put("consume_limit", "3");
 	    DB db = new DB(this);
 	    db.insert(values);
+	    
+	    int position = (int)FridgeRegister.getListPosition();
+	    FridgeRegister.setListPosition(POSITION_INITIALIZE);
+	    
+	    return position;
     }
 
     @Override
