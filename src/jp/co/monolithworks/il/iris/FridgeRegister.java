@@ -10,12 +10,14 @@ public class FridgeRegister extends Application {
 	
     private static Context mContext;
     private static Map<String, Object> mState;
+    private static int mListPosition;
 
     @Override
     public void onCreate() {
         super.onCreate();
         mContext = getApplicationContext();
         mState = new HashMap<String, Object>();
+        mListPosition = -1;
     }
 
     public static Context getContext() {
@@ -24,5 +26,13 @@ public class FridgeRegister extends Application {
 
     public static Map<String, Object> getState() {
         return mState;
+    }
+    
+    public static int getListPosition(){
+        return mListPosition; 
+    }
+    
+    public static void setListPosition(int position){
+        mListPosition = position;
     }
 }
