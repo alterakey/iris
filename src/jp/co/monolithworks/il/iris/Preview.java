@@ -68,9 +68,9 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
     private int mHeight;
     private int mPreviewWidth;
     private int mPreviewHeight;
-    
-    private List<ResultData> lists;
-    
+
+    private List<ResultData> mLists;
+
     //シングルトン
     private RectFactory mRectFactory = RectFactory.getRectFactory();
     private ScanData mScanData = ScanData.getScanData();
@@ -94,9 +94,9 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
         //surfaceViewのtypeを設定
         //ARの場合は、「SURFACE_TYPE_NORMAL」を使用
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-        
-        lists = new ArrayList<ResultData>();
-        
+
+        mLists = new ArrayList<ResultData>();
+
     }
     //アプリケーションからコントロールに対してカメラをセット
     public void setCamera(Camera camera) {
@@ -421,15 +421,15 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
 
                 ToneGenerator toneGenerator = new ToneGenerator(AudioManager.STREAM_SYSTEM, ToneGenerator.MAX_VOLUME);
                 toneGenerator.startTone(ToneGenerator.TONE_PROP_BEEP);
-                
+
                 String barcodeImageName = saveBitmap(data);
                 Bitmap bmp = readBitmap(barcodeImageName);
-                
+
                 if(bmp != null){
-                	Bitmap cabbage = BitmapFactory.decodeResource(getResources(), R.drawable.cabbage);
+                    Bitmap cabbage = BitmapFactory.decodeResource(getResources(), R.drawable.cabbage);
                     ResultData resultData = new ResultData(bmp,cabbage,contents,"あと3日",barcodeImageName);
-                    lists.add(resultData);
-                    mScanData.lists = lists;
+                    mLists.add(resultData);
+                    mScanData.lists = mLists;
                 }
 
                 //トースト表示
@@ -439,7 +439,7 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
                 toast.setDuration(Toast.LENGTH_SHORT);
                 toast.setView(imageView);
                 toast.show();
-                
+
                 //画像削除(data/data/package_name/files)
                 //mContext.deleteFile(barcodeImageName);
             }
@@ -470,7 +470,7 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
                 try{
                     Thread.sleep(1000);
                 }catch(Exception e){
-                	
+
                 }
                 mCamera.takePicture(null,null,mPictureListener);
             }
@@ -482,24 +482,24 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
         public void onPictureTaken(byte[] data,Camera camera){
 
             if(data != null){
-                
+
                 //String itemImageName = saveBitmap(data);
                 //Bitmap bmp = readBitmap(itemImageName);
                 //XXXファイル保存処理
                 Bitmap bmp = BitmapFactory.decodeByteArray(data,0,data.length,null);
-            
+
                 //Log.w("ScanActivity","itemImageName:"+itemImageName);
                 Log.w("ScanActivity","mPreviewWidth"+mPreviewWidth);
                 Log.w("ScanActivity","mPreviewHeight"+mPreviewHeight);
-                
+
                 if(bmp != null){
-                	String contents = "その他";
+                    String contents = "その他";
                     Bitmap cabbage = BitmapFactory.decodeResource(getResources(), R.drawable.cabbage);
                     ResultData resultData = new ResultData(bmp,cabbage,contents,"不明");
-                    lists.add(resultData);
-                    mScanData.lists = lists;
+                    mLists.add(resultData);
+                    mScanData.lists = mLists;
                 }
-                
+
                 //トースト表示
                 ImageView imageView = new ImageView(mContext);
                 imageView.setImageBitmap(bmp);
@@ -507,23 +507,23 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
                 toast.setDuration(Toast.LENGTH_SHORT);
                 toast.setView(imageView);
                 toast.show();
-                
+
             }
             mCamera.startPreview();
             requestPreview();
             requestAutoFocus();
         }
     };
-    
+
     public String saveBitmap(byte[] data){
-    	
+
         //画像を保存(data/data/package_name/files)
         int[] rgb = new int[(mPreviewWidth * mPreviewHeight)];//ARGB8888の画素の配列
         String fileName = null;
         Bitmap bmp=null;
-        
+
         fileName = "iris" + String.valueOf(System.currentTimeMillis()) + ".jpg";
-        
+
         Log.w("ScanActivity","mPreviewWidth"+mPreviewWidth);
         Log.w("ScanActivity","mPreviewHeight"+mPreviewHeight);
 
@@ -546,7 +546,7 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
 	        }
         return fileName;
     }
-    
+
     public Bitmap readBitmap(String fileName){
         //画像読み込み(data/data/package_name/files)
         Bitmap bm = null;
