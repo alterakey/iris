@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="meet">#ffdab9</color>
+    <color name="fish">#bbbbff</color>
+    <color name="vegetable">#ccffaa</color>
+    <color name="drink">#ccddff</color>
+    <color name="fruit">#ffff99</color>
+    <color name="ham">#f5deb3</color>
+</resources>

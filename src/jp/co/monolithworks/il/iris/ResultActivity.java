@@ -17,6 +17,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -79,7 +80,8 @@ public class ResultActivity extends Activity {
         }
 
         ListView lv = (ListView)findViewById(R.id.result_listView);
-
+        lv.setCacheColorHint(Color.TRANSPARENT);
+        
         int position = POSITION_NOT_DELETE;
         Bundle extras = getIntent().getExtras();
         if(extras != null){
@@ -98,6 +100,7 @@ public class ResultActivity extends Activity {
             lv.setAdapter(adapter);
             lv.invalidateViews();
             Log.w("resultActivity","position is not POSITION_NOT_DELETE");
+            position = POSITION_NOT_DELETE;
         }
 
         lv.setAdapter(new ResultAdapter(this,mLists));
