@@ -5,6 +5,7 @@ import java.util.List;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +19,7 @@ public class ResultAdapter extends ArrayAdapter<ResultData>{
     LayoutInflater mInflater;
     
     int meet,fish,vegetable,drink,fruit,ham;
-   
+    int count=100;
 
     public ResultAdapter(Context context,List<ResultData> objects){
         super(context,0,objects);
@@ -50,33 +51,25 @@ public class ResultAdapter extends ArrayAdapter<ResultData>{
             holder.consumelimitText = (TextView)convertView.findViewById(R.id.consumelimit);
             holder.frameLayout = (FrameLayout)convertView.findViewById(R.id.f_layout);
 
-            Log.w("resultActivity","root position:"+position);
-            
-            switch(position%2){
+            switch(count){
             case 0:
-            	holder.frameLayout.setBackgroundColor(meet);
-            	Log.w("resultActivity","position:"+position);
-            	break;
+                holder.frameLayout.setBackgroundColor(meet);
+                break;
             case 1:
-            	holder.frameLayout.setBackgroundColor(fish);
-            	Log.w("resultActivity","position:"+position);
-            	break;
+                holder.frameLayout.setBackgroundColor(fish);
+                break;
             case 2:
-            	holder.frameLayout.setBackgroundColor(vegetable);
-            	Log.w("resultActivity","position:"+position);
-            	break;
+                holder.frameLayout.setBackgroundColor(vegetable);
+                break;
             case 3:
-            	holder.frameLayout.setBackgroundColor(drink);
-            	Log.w("resultActivity","position:"+position);
-            	break;
+                holder.frameLayout.setBackgroundColor(drink);
+                break;
             case 4:
-            	holder.frameLayout.setBackgroundColor(fruit);
-            	Log.w("resultActivity","position:"+position);
-            	break;
+                holder.frameLayout.setBackgroundColor(fruit);
+                break;
             case 5:
-            	holder.frameLayout.setBackgroundColor(ham);
-            	Log.w("resultActivity","position:"+position);
-            	break;
+                holder.frameLayout.setBackgroundColor(ham);
+                break;
             }
             
             convertView.setTag(holder);
@@ -89,8 +82,9 @@ public class ResultAdapter extends ArrayAdapter<ResultData>{
         holder.thumbnailView.setImageBitmap(data.thumbnailBitmap);
         holder.iconView.setImageBitmap(data.iconBitmap);
         holder.categoryText.setText(data.categoryText);
+        //holder.categoryText.setTypeface( Typeface.DEFAULT_BOLD, Typeface.BOLD );
         holder.consumelimitText.setText(data.consumelimitText);
-
+        //holder.consumelimitText.setTypeface( Typeface.DEFAULT_BOLD, Typeface.BOLD );
         return convertView;
     }
 
