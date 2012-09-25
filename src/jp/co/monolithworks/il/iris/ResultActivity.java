@@ -8,8 +8,10 @@ import java.util.Map;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -19,6 +21,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,8 +43,10 @@ public class ResultActivity extends Activity {
     public static final String SELECTED_ITEM_KEY = "ResultActivity_item_selected";
     public static final String SELECTED_ITEM_DELETE_KEY = "ResultActivity_item_delete";
     public static final String SELECTED_ADAPTER_DELETE_KEY = "ResultActivity_adapter_delete";
+    private final static int REQUEST_ITEM = 0;
 
     private Context mContext = this;
+    private ArrayAdapter<ResultData> mAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,6 +72,8 @@ public class ResultActivity extends Activity {
     public void onResume(){
         super.onResume();
 
+        Log.w("resultActivity","onResume call");
+        
         mScanData = ScanData.getScanData();
         mLists = new ArrayList<ResultData>();
         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_search);
@@ -89,21 +96,22 @@ public class ResultActivity extends Activity {
         }
 
         if(position == POSITION_NOT_DELETE){
-            lv.setAdapter(new ResultAdapter(this,mLists));
+        	mAdapter = new ResultAdapter(this,mLists);
+            lv.setAdapter(mAdapter);
             Log.w("resultActivity","position is POSITION_NOT_DELETE");
         }else{
-            ArrayAdapter<ResultData> adapter  = (ArrayAdapter<ResultData>)FridgeRegister.getState().get(ResultActivity.SELECTED_ADAPTER_DELETE_KEY);
+            mAdapter  = (ArrayAdapter<ResultData>)FridgeRegister.getState().get(ResultActivity.SELECTED_ADAPTER_DELETE_KEY);
             FridgeRegister.getState().remove(ResultActivity.SELECTED_ADAPTER_DELETE_KEY);
             ResultData item  = (ResultData)FridgeRegister.getState().get(ResultActivity.SELECTED_ITEM_DELETE_KEY);
             FridgeRegister.getState().remove(ResultActivity.SELECTED_ITEM_DELETE_KEY);
-            adapter.remove(item);
-            lv.setAdapter(adapter);
+            mAdapter.remove(item);
+            lv.setAdapter(mAdapter);
             lv.invalidateViews();
             Log.w("resultActivity","position is not POSITION_NOT_DELETE");
             position = POSITION_NOT_DELETE;
         }
 
-        lv.setAdapter(new ResultAdapter(this,mLists));
+        //lv.setAdapter(new ResultAdapter(this,mLists));
         lv.setScrollingCacheEnabled(false);
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener(){
@@ -117,8 +125,9 @@ public class ResultActivity extends Activity {
                 ArrayAdapter<ResultData> adapter = (ArrayAdapter<ResultData>)listView.getAdapter();
 
                 Intent intent = new Intent();
-                intent.setClass(ResultActivity.this, DetailActivity.class);
-                startActivity(intent);
+                //intent.setClass(ResultActivity.this, DetailActivity.class);
+                intent.setClass(ResultActivity.this, CategoryActivity.class);
+                startActivityForResult(intent,REQUEST_ITEM);
 
                 FridgeRegister.getState().put(SELECTED_ITEM_KEY,mLists.get(position));
                 FridgeRegister.getState().put(SELECTED_ADAPTER_DELETE_KEY,adapter);
@@ -129,6 +138,15 @@ public class ResultActivity extends Activity {
 
         View emptyView = (View)findViewById(R.id.listview_empty);
         lv.setEmptyView(emptyView);
+    }
+    
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        if (requestCode == REQUEST_ITEM && resultCode == RESULT_OK) {
+            Bundle extras = intent.getExtras();
+            if (extras != null) {
+            }
+            Toast.makeText(this, "戻りました。", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -155,5 +173,40 @@ public class ResultActivity extends Activity {
                 break;
         }
         return true;
+    }
+    
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event){
+        if(keyCode == KeyEvent.KEYCODE_BACK){
+            AlertDialog.Builder builder = new AlertDialog.Builder(ResultActivity.this);
+            builder.setMessage("アイテムをすべて冷蔵庫に入れます。よろしいですか？")
+                    .setCancelable(false)
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            int count = mAdapter.getCount();
+                            for(int i=0; i < count; i++){
+                                ResultData rd = mAdapter.getItem(i);
+                                
+                            }
+                            
+                            Intent intent = new Intent();
+                            intent.setClass(ResultActivity.this,FridgeActivity.class);
+                        }
+                    })
+                    .setNeutralButton("アプリ終了", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            ResultActivity.this.finish();
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
+            builder.create().show();
+            
+             return true;
+        }
+        return false;
     }
 }
