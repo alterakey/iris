@@ -1,7 +1,11 @@
 package jp.co.monolithworks.il.iris;
 
 import android.os.Bundle;
+<<<<<<< Updated upstream
 import android.app.*;
+=======
+import android.app.ListActivity;
+>>>>>>> Stashed changes
 import android.content.*;
 import android.view.*;
 import android.widget.*;
@@ -10,7 +14,7 @@ import android.util.*;
 
 import java.util.*;
 
-public class FridgeActivity extends Activity {
+public class FridgeActivity extends ListActivity {
 
     protected List<ConsumeLimit_Items> consumelimit_list;
     private LimitAdapter adapter = null;
@@ -63,6 +67,7 @@ public class FridgeActivity extends Activity {
             lv.setAdapter(adapter);
             lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
             }else{
+
             tv.setText("冷蔵庫の中にはぞうが入っています。");
             tv.setVisibility(View.VISIBLE);
         }
@@ -138,28 +143,7 @@ public class FridgeActivity extends Activity {
                 });
             holder.textview1.setText(limit_items.category);
             holder.textview2.setText("後" + limit_items.consumelimit + "日");
-            holder.imageview1.setImageResource(R.drawable.ncm_0188);
-
-            // switch(position){
-            //case 1:
-            //  holder.backcolor.setBackgroundColor(Color.parseColor("#aa2222"));
-            //  break;
-            //case 2:
-            //  holder.backcolor.setBackgroundColor(Color.parseColor("#33dd72"));
-            //  break;
-            //case 3:
-            //  holder.backcolor.setBackgroundColor(Color.parseColor("#4455bb"));
-            //  break;
-            //case 4:
-            //  holder.backcolor.setBackgroundColor(Color.parseColor("#2222ee"));
-            //  break;
-            //}
-
             holder.imageview1.setImageBitmap(limit_items.thumb_bmp);
-
-            holder.textview1.setText(limit_items.category);
-            holder.textview2.setText(limit_items.consumelimit);
-            //holder.imageview1.setImageResource(R.drawable.ncm_0188);
             holder.imageview2.setImageResource(R.drawable.cabbage);
             //new ImageLoader(holder, position, card).executeParallel();
             return convertView;

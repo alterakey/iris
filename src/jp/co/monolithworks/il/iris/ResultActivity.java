@@ -7,8 +7,11 @@ import java.util.List;
 import java.util.Map;
 
 import android.os.Bundle;
+<<<<<<< Updated upstream
 import android.app.Activity;
 import android.app.AlertDialog;
+=======
+>>>>>>> Stashed changes
 import android.app.ListActivity;
 import android.content.ContentValues;
 import android.content.Context;
@@ -35,7 +38,7 @@ import android.widget.ListView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
-public class ResultActivity extends Activity {
+public class ResultActivity extends ListActivity {
 
     private ScanData mScanData;
     private SQLiteDatabase mDb;
@@ -114,8 +117,7 @@ public class ResultActivity extends Activity {
 
         //ListView lv = (ListView)findViewById(R.id.list);
         //lv.setAdapter(new ResultAdapter(this,mLists));
-        //lv.setScrollingCacheEnabled(false);
-        lv.setAdapter(new ResultAdapter(this,mLists));
+        //lv.setScrollingCacheEnabled(false);        lv.setAdapter(new ResultAdapter(this,mLists));
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
@@ -139,7 +141,7 @@ public class ResultActivity extends Activity {
         });
 
         View emptyView = (View)findViewById(R.id.listview_empty);
-        lv.setEmptyView(emptyView);
+        getListView().setEmptyView(emptyView);
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
