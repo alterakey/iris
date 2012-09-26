@@ -73,7 +73,6 @@ public class FridgeActivity extends Activity {
             super(context,0,object);
             this.inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            consumelimit_list = object;
         }
 
         private class ViewHolder {
