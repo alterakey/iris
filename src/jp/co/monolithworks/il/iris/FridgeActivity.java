@@ -18,8 +18,6 @@ public class FridgeActivity extends Activity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_result);
-        Button b = (Button)findViewById(R.id.scan_button);
-        b.setVisibility(View.GONE);
 
         consumelimit_list = new LinkedList<ConsumeLimit_Items>();
         item_read();
