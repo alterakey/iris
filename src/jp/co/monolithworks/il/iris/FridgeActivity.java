@@ -1,11 +1,7 @@
 package jp.co.monolithworks.il.iris;
 
 import android.os.Bundle;
-<<<<<<< Updated upstream
 import android.app.*;
-=======
-import android.app.ListActivity;
->>>>>>> Stashed changes
 import android.content.*;
 import android.view.*;
 import android.widget.*;

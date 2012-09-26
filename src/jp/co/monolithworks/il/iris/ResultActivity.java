@@ -7,11 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import android.os.Bundle;
-<<<<<<< Updated upstream
 import android.app.Activity;
 import android.app.AlertDialog;
-=======
->>>>>>> Stashed changes
 import android.app.ListActivity;
 import android.content.ContentValues;
 import android.content.Context;

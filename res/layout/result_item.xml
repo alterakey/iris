@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="240dp"
-    android:orientation="vertical" >
+	      android:layout_width="match_parent"
+	      android:layout_height="240dp"
+	      android:orientation="vertical"
+	      android:id="@+id/item_layout">
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@drawable/listview_bg" >
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical"
+      android:background="@drawable/listview_bg" >
     <FrameLayout
         android:id="@+id/f_layout"
         android:layout_width="match_parent"
@@ -33,80 +35,77 @@
           android:layout_gravity="right"
           android:src="@android:drawable/ic_delete" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:orientation="vertical" >
+      <LinearLayout
+	  android:layout_width="match_parent"
+	  android:layout_height="match_parent"
+	  android:gravity="center_vertical"
+	  android:orientation="vertical" >
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="150dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal" >
+	<LinearLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:layout_marginTop="150dp"
+	    android:gravity="center_vertical"
+	    android:orientation="horizontal" >
 
-            <ImageView
-                android:id="@+id/icon"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:src="@drawable/cabbage" />
+	  <ImageView
+	      android:id="@+id/icon"
+	      android:layout_width="50dp"
+	      android:layout_height="50dp"
+	      android:src="@drawable/cabbage" />
 
-            <TextView
-                android:id="@+id/category"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="0.70"
-                android:paddingLeft="5dp"
-                android:paddingTop="40dp"
-                android:text="カテゴリ名"
-                android:textColor="#000000"
-                android:textSize="18sp"
-                android:shadowColor="#000000"
-                android:shadowDx="1.0"
-                android:shadowDy="1.0"
-                android:shadowRadius="0.1" />
+	  <TextView
+	      android:id="@+id/category"
+	      android:layout_width="wrap_content"
+	      android:layout_height="match_parent"
+	      android:layout_gravity="center_vertical"
+	      android:layout_weight="0.70"
+	      android:paddingLeft="5dp"
+	      android:paddingTop="40dp"
+	      android:text="カテゴリ名"
+	      android:textColor="#000000"
+	      android:textSize="18sp"
+	      android:shadowColor="#000000"
+	      android:shadowDx="1.0"
+	      android:shadowDy="1.0"
+	      android:shadowRadius="0.1" />
 
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingTop="10dp" >
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.8"
-                    android:text="消費期限"
-                    android:textColor="#000000"
-                    android:textSize="18sp"
-                    android:paddingLeft="55dp"/>
-
-                <TextView
-                    android:id="@+id/consumelimit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.2"
-                    android:gravity="right"
-                    android:paddingRight="30dp"
-                    android:text="3日"
-                    android:textColor="#000000"
-                    android:textSize="18sp"
-                    android:shadowColor="#000000"
-                    android:shadowDx="1.0"
-                    android:shadowDy="1.0"
-                    android:shadowRadius="0.1" />
+	</LinearLayout>
 
 
-            </LinearLayout>
-        </LinearLayout>
+	<LinearLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:gravity="center"
+	    android:orientation="horizontal"
+	    android:paddingTop="10dp" >
+
+	  <TextView
+	      android:layout_width="wrap_content"
+	      android:layout_height="wrap_content"
+	      android:layout_weight="0.8"
+	      android:text="消費期限"
+	      android:textColor="#000000"
+	      android:textSize="18sp"
+	      android:paddingLeft="55dp"/>
+
+	  <TextView
+	      android:id="@+id/consumelimit"
+	      android:layout_width="wrap_content"
+	      android:layout_height="wrap_content"
+	      android:layout_weight="0.2"
+	      android:gravity="right"
+	      android:paddingRight="30dp"
+	      android:text="3日"
+	      android:textColor="#000000"
+	      android:textSize="18sp"
+	      android:shadowColor="#000000"
+	      android:shadowDx="1.0"
+	      android:shadowDy="1.0"
+	      android:shadowRadius="0.1" />
+	</LinearLayout>
+      </LinearLayout>
     </FrameLayout>
 
   </LinearLayout>
-
 </LinearLayout>
