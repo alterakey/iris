@@ -422,16 +422,19 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
                 ToneGenerator toneGenerator = new ToneGenerator(AudioManager.STREAM_SYSTEM, ToneGenerator.MAX_VOLUME);
                 toneGenerator.startTone(ToneGenerator.TONE_PROP_BEEP);
 
-                String barcodeImageName = saveBitmap(data);
-                Bitmap bmp = readBitmap(barcodeImageName);
-
+                String barcodeImageName = BitmapManager.saveBitmap(data,mContext,mPreviewWidth,mPreviewHeight);
+                //String barcodeImageName = saveBitmap(data);
+                //Bitmap bmp = readBitmap(barcodeImageName);
+                Bitmap bmp = BitmapManager.readBitmap(barcodeImageName,mContext);
+                
                 if(bmp != null){
                     Bitmap cabbage = BitmapFactory.decodeResource(getResources(), R.drawable.cabbage);
-                    ResultData resultData = new ResultData(bmp,cabbage,contents,"あと3日",barcodeImageName);
+                    ResultData resultData = new ResultData(bmp,cabbage,contents,"あと3日",barcodeImageName,contents);
                     mLists.add(resultData);
                     mScanData.lists = mLists;
                 }
 
+                /*
                 //トースト表示
                 ImageView imageView = new ImageView(mContext);
                 imageView.setImageBitmap(bmp);
@@ -439,6 +442,7 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
                 toast.setDuration(Toast.LENGTH_SHORT);
                 toast.setView(imageView);
                 toast.show();
+                */
 
                 //画像削除(data/data/package_name/files)
                 //mContext.deleteFile(barcodeImageName);
@@ -485,7 +489,9 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
 
                 //String itemImageName = saveBitmap(data);
                 //Bitmap bmp = readBitmap(itemImageName);
-                //XXXファイル保存処理
+                //String itemImageName = saveBitmap(data);
+                //Bitmap bmp = BitmapManager.readBitmap(itemImageName,mContext);
+            	//XXXファイル保存処理
                 Bitmap bmp = BitmapFactory.decodeByteArray(data,0,data.length,null);
 
                 //Log.w("ScanActivity","itemImageName:"+itemImageName);
@@ -514,59 +520,4 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
             requestAutoFocus();
         }
     };
-
-    public String saveBitmap(byte[] data){
-
-        //画像を保存(data/data/package_name/files)
-        int[] rgb = new int[(mPreviewWidth * mPreviewHeight)];//ARGB8888の画素の配列
-        String fileName = null;
-        Bitmap bmp=null;
-
-        fileName = "iris" + String.valueOf(System.currentTimeMillis()) + ".jpg";
-
-        Log.w("ScanActivity","mPreviewWidth"+mPreviewWidth);
-        Log.w("ScanActivity","mPreviewHeight"+mPreviewHeight);
-
-	        try{
-	            //ARGB8888でからのビットマップ作成
-	            bmp = Bitmap.createBitmap(mPreviewWidth,mPreviewHeight,Bitmap.Config.ARGB_8888);
-	            mDecoder.decodeYUV420SP(rgb,data,mPreviewWidth,mPreviewHeight);//変換
-	            //変換した画素からビットマップにセット
-	            bmp.setPixels(rgb,0,mPreviewWidth,0,0,mPreviewWidth,mPreviewHeight);
-	            try{
-	                //画像保存処理
-	                FileOutputStream out = mContext.openFileOutput(fileName,Context.MODE_WORLD_READABLE);
-	                bmp.compress(Bitmap.CompressFormat.JPEG,100,out);
-	                out.close();
-	            }catch(Exception e){
-	                Log.w("ScanActivity","itemPhoto save Exception");
-	            }
-	        }catch(Exception e){
-	            Log.w("ScanActivity","itemPhoto create Exception");
-	        }
-        return fileName;
-    }
-
-    public Bitmap readBitmap(String fileName){
-        //画像読み込み(data/data/package_name/files)
-        Bitmap bm = null;
-        try{
-            FileInputStream in = mContext.openFileInput(fileName);
-            BufferedInputStream binput = new BufferedInputStream(in);
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            byte[] w = new byte[1024];
-            while (binput.read(w) >= 0){
-                out.write(w,0,1024);
-            }
-            byte[] byteData = out.toByteArray();
-            bm = BitmapFactory.decodeByteArray(byteData,0,byteData.length);
-            in.close();
-            out.close();
-        }catch(FileNotFoundException e){
-            Log.w("ScanActivity","itemPhoto read fileNotFoundException");
-        }catch(IOException e){
-            Log.w("ScanActivity","itemPhoto read IOException");
-        }
-    	return bm;
-    }
 }

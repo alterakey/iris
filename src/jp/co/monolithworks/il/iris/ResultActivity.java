@@ -64,9 +64,7 @@ public class ResultActivity extends Activity {
                 startActivity(intent);
             }
         });
-
         Log.w("resultActivity","onCreate");
-
     }
 
     @Override
@@ -182,35 +180,74 @@ public class ResultActivity extends Activity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event){
         if(keyCode == KeyEvent.KEYCODE_BACK){
-            AlertDialog.Builder builder = new AlertDialog.Builder(ResultActivity.this);
-            builder.setMessage("アイテムをすべて冷蔵庫に入れます。よろしいですか？")
-                    .setCancelable(false)
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            int count = mAdapter.getCount();
-                            for(int i=0; i < count; i++){
-                                ResultData rd = mAdapter.getItem(i);
 
-                            }
-
-                            Intent intent = new Intent();
-                            intent.setClass(ResultActivity.this,FridgeActivity.class);
-                        }
-                    })
-                    .setNeutralButton("アプリ終了", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            ResultActivity.this.finish();
-                        }
-                    })
-                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            dialog.cancel();
-                        }
-                    });
-            builder.create().show();
-
-             return true;
+            int count = mAdapter.getCount();
+            if(count > 0){
+                fridgeMoveAskDialog(count);
+                return true;
+            }else{
+                ResultActivity.this.finish();
+                return true;
+            }
         }
         return false;
     }
+
+    public void applicationFinishDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(ResultActivity.this);
+        builder.setMessage(getText(R.string.dialog_finish_message))
+                .setCancelable(false)
+                .setPositiveButton(getText(R.string.dialog_positive_button), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        ResultActivity.this.finish();
+                    }
+                })
+                .setNegativeButton(getText(R.string.dialog_negative_button), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        builder.create().show();
+    }
+
+    public void fridgeMoveAskDialog(final int count){
+        AlertDialog.Builder builder = new AlertDialog.Builder(ResultActivity.this);
+        builder.setMessage(getText(R.string.dialog_fridge_message))
+                .setCancelable(false)
+                .setPositiveButton(getText(R.string.dialog_positive_button), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        for(int i=0; i < count; i++){
+                            ResultData rd = mAdapter.getItem(i);
+                            item_insert(rd);
+                        }
+                        mAdapter.clear();
+                        Intent intent = new Intent();
+                        intent.setClass(ResultActivity.this,FridgeActivity.class);
+                        startActivity(intent);
+                    }
+                })
+                .setNeutralButton(getText(R.string.dialog_neutral_button), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        ResultActivity.this.finish();
+                    }
+                })
+                .setNegativeButton(getText(R.string.dialog_negative_button), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        builder.create().show();
+    }
+
+
+    public void item_insert(ResultData data){
+        DB db = new DB(this);
+        ContentValues cv = new ContentValues();
+        cv.put("jan_code", data.jan_code);
+        cv.put("category_name",data.categoryText);
+        cv.put("bar_code", data.thumbnailFileName);
+        cv.put("consume_limit",data.consumelimitText);
+        db.insert(cv);
+    }
+
 }

@@ -44,6 +44,12 @@ public class FridgeActivity extends Activity {
             ci.category = item.get("category_name");
             ci.consumelimit = item.get("consume_limit");
             ci.jan_code = item.get("jan_code");
+            String thumbnailFileName = item.get("bar_code");
+            Bitmap bmp = BitmapManager.readBitmap(thumbnailFileName, this.getApplicationContext());
+            ImageView imageView = new ImageView(this.getApplicationContext());
+            imageView.setImageBitmap(bmp);
+            ci.thumb = imageView;
+            ci.thumb_bmp = bmp;
             consumelimit_list.add(ci);
         }
     }
@@ -96,7 +102,7 @@ public class FridgeActivity extends Activity {
 
 
             if (convertView == null) {
-                convertView = inflater.inflate(R.layout.result_item, null, false);
+                convertView = inflater.inflate(R.layout.result_item, parent, false);
                 holder = new ViewHolder();
                 holder.position = position;
                 holder.delete = (ImageButton) convertView.findViewById(R.id.deleteButton);
@@ -109,6 +115,7 @@ public class FridgeActivity extends Activity {
                 holder = (ViewHolder) convertView.getTag();
                 holder.position = position;
             }
+
             holder.delete.setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View v){
@@ -132,6 +139,27 @@ public class FridgeActivity extends Activity {
             holder.textview1.setText(limit_items.category);
             holder.textview2.setText("後" + limit_items.consumelimit + "日");
             holder.imageview1.setImageResource(R.drawable.ncm_0188);
+
+            // switch(position){
+            //case 1:
+            //  holder.backcolor.setBackgroundColor(Color.parseColor("#aa2222"));
+            //  break;
+            //case 2:
+            //  holder.backcolor.setBackgroundColor(Color.parseColor("#33dd72"));
+            //  break;
+            //case 3:
+            //  holder.backcolor.setBackgroundColor(Color.parseColor("#4455bb"));
+            //  break;
+            //case 4:
+            //  holder.backcolor.setBackgroundColor(Color.parseColor("#2222ee"));
+            //  break;
+            //}
+
+            holder.imageview1.setImageBitmap(limit_items.thumb_bmp);
+
+            holder.textview1.setText(limit_items.category);
+            holder.textview2.setText(limit_items.consumelimit);
+            //holder.imageview1.setImageResource(R.drawable.ncm_0188);
             holder.imageview2.setImageResource(R.drawable.cabbage);
             //new ImageLoader(holder, position, card).executeParallel();
             return convertView;
@@ -144,6 +172,8 @@ public class FridgeActivity extends Activity {
         String jan_code;
         ImageView thumb;
         ImageView icon;
+        Bitmap thumb_bmp;
+        String thumbnaimFileName;
 
         //public ConsumeLimit_Items(String category,String consumelimit,ImageView thumb,ImageView icon){
         public ConsumeLimit_Items(){
@@ -171,6 +201,10 @@ public class FridgeActivity extends Activity {
 
         public ImageView getIcon(){
             return icon;
+        }
+
+        public Bitmap getThumb_bmp(){
+            return thumb_bmp;
         }
     }
 
