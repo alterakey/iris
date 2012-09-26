@@ -37,6 +37,7 @@ public class FridgeActivity extends Activity {
             ci.consumelimit = item.get("consume_limit");
             ci.jan_code = item.get("jan_code");
             String thumbnailFileName = item.get("bar_code");
+            ci.thumbnaimFileName = thumbnailFileName;
             Bitmap bmp = BitmapManager.readBitmap(thumbnailFileName, this.getApplicationContext());
             ImageView imageView = new ImageView(this.getApplicationContext());
             imageView.setImageBitmap(bmp);
@@ -58,7 +59,7 @@ public class FridgeActivity extends Activity {
                 public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
                     ListView listView = (ListView) parent;
                     ConsumeLimit_Items item = consumelimit_list.get(position);
-                    String[] code = {item.jan_code};
+                    String[] code = {item.thumbnaimFileName};
                     DB db = new DB(FridgeActivity.this);
                     db.delete(code);
                     item_read();

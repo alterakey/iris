@@ -62,6 +62,7 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
     private Context mContext = getContext();
     private Decoder mDecoder = new Decoder();
     private boolean isDecodeBitmapPreview = false;
+    private boolean isDecodeTakePicture = false;
     private int mLeft;
     private int mTop;
     private int mWidth;
@@ -386,8 +387,8 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
 
             //解析を3フレームに1回の割合で行う
             if(mPreviewCounts % 3 == 0){
-                //オートフォーカス中は解析しない　かつ　デコード中は解析しない
-                if((mIsFocusRunning != true)&&(isDecodeBitmapPreview != true)){
+                //オートフォーカス中は解析しない かつ デコード中 かつ 写真撮影中は解析しない
+                if((mIsFocusRunning != true)&&(isDecodeBitmapPreview != true)&&(isDecodeTakePicture != true)){
                     decodeBitmapPreview(data);
                     //Log.w("preview","decode exec");
                 }
@@ -423,8 +424,6 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
                 toneGenerator.startTone(ToneGenerator.TONE_PROP_BEEP);
 
                 String barcodeImageName = BitmapManager.saveBitmap(data,mContext,mPreviewWidth,mPreviewHeight);
-                //String barcodeImageName = saveBitmap(data);
-                //Bitmap bmp = readBitmap(barcodeImageName);
                 Bitmap bmp = BitmapManager.readBitmap(barcodeImageName,mContext);
                 
                 if(bmp != null){
@@ -467,7 +466,7 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
 
     public void takePicture(){
         requestAutoFocus();
-
+        isDecodeTakePicture = true;
         //1秒待って撮影処理(autofocusが効く前に撮影してしまう為)
         Thread trd = new Thread(new Runnable(){
             public void run() {
@@ -491,21 +490,11 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
                 //Bitmap bmp = readBitmap(itemImageName);
                 //String itemImageName = saveBitmap(data);
                 //Bitmap bmp = BitmapManager.readBitmap(itemImageName,mContext);
-            	//XXXファイル保存処理
-                Bitmap bmp = BitmapFactory.decodeByteArray(data,0,data.length,null);
 
-                //Log.w("ScanActivity","itemImageName:"+itemImageName);
-                Log.w("ScanActivity","mPreviewWidth"+mPreviewWidth);
-                Log.w("ScanActivity","mPreviewHeight"+mPreviewHeight);
-
-                if(bmp != null){
-                    String contents = "その他";
-                    Bitmap cabbage = BitmapFactory.decodeResource(getResources(), R.drawable.cabbage);
-                    ResultData resultData = new ResultData(bmp,cabbage,contents,"不明");
-                    mLists.add(resultData);
-                    mScanData.lists = mLists;
-                }
-
+                String fileName = BitmapManager.pictureSaveBitmap(data,mContext,mPreviewWidth,mPreviewHeight);
+                Bitmap bmp = BitmapManager.readBitmap(fileName, mContext);
+                
+                
                 //トースト表示
                 ImageView imageView = new ImageView(mContext);
                 imageView.setImageBitmap(bmp);
@@ -513,11 +502,20 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
                 toast.setDuration(Toast.LENGTH_SHORT);
                 toast.setView(imageView);
                 toast.show();
-
+                
+                
+                if(bmp != null){
+                    String contents = "その他";
+                    Bitmap cabbage = BitmapFactory.decodeResource(getResources(), R.drawable.cabbage);
+                    ResultData resultData = new ResultData(bmp,cabbage,contents,"不明",fileName);
+                    mLists.add(resultData);
+                    mScanData.lists = mLists;
+                }
             }
             mCamera.startPreview();
-            requestPreview();
-            requestAutoFocus();
+            //requestPreview();
+            //requestAutoFocus();
+            isDecodeTakePicture = false;
         }
     };
 }
