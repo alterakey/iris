@@ -35,7 +35,7 @@ import android.widget.ListView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
-public class ResultActivity extends ListActivity {
+public class ResultActivity extends Activity {
 
     private ScanData mScanData;
     private SQLiteDatabase mDb;
@@ -138,7 +138,7 @@ public class ResultActivity extends ListActivity {
         });
 
         View emptyView = (View)findViewById(R.id.listview_empty);
-        getListView().setEmptyView(emptyView);
+        lv.setEmptyView(emptyView);
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
