@@ -16,8 +16,6 @@ public class FridgeActivity extends Activity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_result);
-        Button b = (Button)findViewById(R.id.scan_button);
-        b.setVisibility(View.GONE);
 
         setListView();
     }
@@ -33,8 +31,9 @@ public class FridgeActivity extends Activity {
             ci.consumelimit = item.get("consume_limit");
             ci.jan_code = item.get("jan_code");
             String thumbnailFileName = item.get("bar_code");
-            Bitmap bmp = BitmapManager.readBitmap(thumbnailFileName, c);
-            ImageView imageView = new ImageView(c);
+            ci.thumbnaimFileName = thumbnailFileName;
+            Bitmap bmp = BitmapManager.readBitmap(thumbnailFileName, this.getApplicationContext());
+            ImageView imageView = new ImageView(this.getApplicationContext());
             imageView.setImageBitmap(bmp);
             ci.thumb = imageView;
             ci.thumb_bmp = bmp;
@@ -52,7 +51,6 @@ public class FridgeActivity extends Activity {
         lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         if(consumelimit_list.size() != 0){
             tv.setVisibility(View.GONE);
-
         }else{
 
             tv.setText("冷蔵庫の中にはぞうが入っています。");

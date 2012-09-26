@@ -47,6 +47,22 @@ public class BitmapManager {
         return fileName;
     }
 
+    public static String pictureSaveBitmap(byte[] data,Context context,int previewWidth,int previewHeight){
+        String fileName = null;
+        fileName = "iris" + String.valueOf(System.currentTimeMillis()) + ".jpg";
+        Bitmap bitmap = BitmapFactory.decodeByteArray(data,0,data.length,null);
+        Bitmap bmp = Bitmap.createScaledBitmap(bitmap, previewWidth, previewHeight, true);
+        try{
+            //画像保存処理
+            FileOutputStream out = context.openFileOutput(fileName,Context.MODE_WORLD_READABLE);
+            bmp.compress(Bitmap.CompressFormat.JPEG,100,out);
+            out.close();
+        }catch(Exception e){
+            Log.w("ScanActivity","itemPhoto save Exception");
+        }
+        return fileName;
+    }
+    
     public static Bitmap readBitmap(String fileName,Context context){
         //画像読み込み(data/data/package_name/files)
         Bitmap bm = null;

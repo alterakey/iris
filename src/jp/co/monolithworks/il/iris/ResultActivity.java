@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ListActivity;
@@ -31,6 +32,7 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
@@ -54,17 +56,6 @@ public class ResultActivity extends Activity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_result);
-
-        Button scanButton = (Button)findViewById(R.id.scan_button);
-        scanButton.setOnClickListener(new OnClickListener(){
-            @Override
-            public void onClick(View v){
-                Intent intent = new Intent();
-                intent.setClass(ResultActivity.this,ScanActivity.class);
-                startActivity(intent);
-            }
-        });
-        Log.w("resultActivity","onCreate");
     }
 
     @Override
@@ -139,6 +130,22 @@ public class ResultActivity extends Activity {
 
         View emptyView = (View)findViewById(R.id.listview_empty);
         lv.setEmptyView(emptyView);
+        
+        if(mAdapter.getCount() == 0){
+        	Log.w("resultactivity","mAdapter is 0");
+            LinearLayout ll = (LinearLayout)findViewById(R.id.result_linearlayout);
+            ll.setOnClickListener(new OnClickListener(){
+                @Override
+                public void onClick(View v){
+                    Intent intent = new Intent();
+                    intent.setClass(ResultActivity.this,ScanActivity.class);
+                    startActivity(intent);
+                    
+                    Vibrator vibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
+                    vibrator.vibrate(40);
+                }
+            });
+        }
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {

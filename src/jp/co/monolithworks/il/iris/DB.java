@@ -58,10 +58,10 @@ public class DB{
         }
     }
 
-    public void delete(String[] jan_codes){
+    public void delete(String[] bar_code){
         try{
-            String str = "jan_code=?";
-            int i = mDb.delete("fridge_table",str,jan_codes);
+            String str = "bar_code=?";
+            int i = mDb.delete("fridge_table",str,bar_code);
         }catch(SQLiteException e){
             throw e;
         }finally{
