@@ -9,6 +9,7 @@ import java.util.Map;
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ListActivity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -73,7 +74,6 @@ public class ResultActivity extends Activity {
         super.onResume();
 
         Log.w("resultActivity","onResume call");
-        
         mScanData = ScanData.getScanData();
         mLists = new ArrayList<ResultData>();
         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_search);
@@ -86,9 +86,9 @@ public class ResultActivity extends Activity {
            Log.w("resultActivity","mList is null");
         }
 
-        ListView lv = (ListView)findViewById(R.id.result_listView);
+        ListView lv = (ListView)findViewById(R.id.result_listview);
         lv.setCacheColorHint(Color.TRANSPARENT);
-        
+
         int position = POSITION_NOT_DELETE;
         Bundle extras = getIntent().getExtras();
         if(extras != null){
@@ -114,6 +114,10 @@ public class ResultActivity extends Activity {
         //lv.setAdapter(new ResultAdapter(this,mLists));
         lv.setScrollingCacheEnabled(false);
 
+        //ListView lv = (ListView)findViewById(R.id.list);
+        //lv.setAdapter(new ResultAdapter(this,mLists));
+        //lv.setScrollingCacheEnabled(false);
+        lv.setAdapter(new ResultAdapter(this,mLists));
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
@@ -139,7 +143,7 @@ public class ResultActivity extends Activity {
         View emptyView = (View)findViewById(R.id.listview_empty);
         lv.setEmptyView(emptyView);
     }
-    
+
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (requestCode == REQUEST_ITEM && resultCode == RESULT_OK) {
             Bundle extras = intent.getExtras();
@@ -174,7 +178,7 @@ public class ResultActivity extends Activity {
         }
         return true;
     }
-    
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event){
         if(keyCode == KeyEvent.KEYCODE_BACK){
@@ -186,9 +190,9 @@ public class ResultActivity extends Activity {
                             int count = mAdapter.getCount();
                             for(int i=0; i < count; i++){
                                 ResultData rd = mAdapter.getItem(i);
-                                
+
                             }
-                            
+
                             Intent intent = new Intent();
                             intent.setClass(ResultActivity.this,FridgeActivity.class);
                         }
@@ -204,7 +208,7 @@ public class ResultActivity extends Activity {
                         }
                     });
             builder.create().show();
-            
+
              return true;
         }
         return false;

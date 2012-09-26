@@ -1,7 +1,7 @@
 package jp.co.monolithworks.il.iris;
 
 import android.os.Bundle;
-import android.app.Activity;
+import android.app.*;
 import android.content.*;
 import android.view.*;
 import android.widget.*;
@@ -12,7 +12,8 @@ import java.util.*;
 
 public class FridgeActivity extends Activity {
 
-    private List<ConsumeLimit_Items> consumelimit_list;
+    protected List<ConsumeLimit_Items> consumelimit_list;
+    private LimitAdapter adapter = null;
 
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -20,10 +21,17 @@ public class FridgeActivity extends Activity {
         setContentView(R.layout.activity_result);
         Button b = (Button)findViewById(R.id.scan_button);
         b.setVisibility(View.GONE);
+        //ToutchListView tlv=(ToutchListView)getListView();
 
         consumelimit_list = new LinkedList<ConsumeLimit_Items>();
         item_read();
+
+
+        adapter = new LimitAdapter(this,consumelimit_list);
         setListView();
+
+        //tlv.setDropListener(onDrop);
+		//tlv.setRemoveListener(onRemove);
 
     }
 
@@ -45,38 +53,23 @@ public class FridgeActivity extends Activity {
 
         if(consumelimit_list.size() != 0){
             tv.setVisibility(View.GONE);
-            ListView lv = (ListView)findViewById(R.id.result_listView);
-            lv.setAdapter(new LimitAdapter(this,consumelimit_list));
-            lv.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
-                    ListView listView = (ListView) parent;
-                    ConsumeLimit_Items item = consumelimit_list.get(position);
-                    String[] code = {item.jan_code};
-                    DB db = new DB(FridgeActivity.this);
-                    db.delete(code);
-                    item_read();
-                    consumelimit_list.remove(position);
-                    if(consumelimit_list.size() != 0){
-                        listView.setAdapter(new LimitAdapter(FridgeActivity.this,consumelimit_list));
-                    }else{
-                        tv.setText("冷蔵庫の中にはぞうが入っています。");
-                        tv.setVisibility(View.VISIBLE);
-                    }
-                }
-            });
-        }else{
+            ListView lv = (ListView)findViewById(R.id.result_listview);
+            lv.setAdapter(adapter);
+            lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+            }else{
             tv.setText("冷蔵庫の中にはぞうが入っています。");
             tv.setVisibility(View.VISIBLE);
         }
+
     }
 
     private class LimitAdapter extends ArrayAdapter<ConsumeLimit_Items> {
         private LayoutInflater inflater;
         private Activity activity;
-
+        public  List<ConsumeLimit_Items> consumelimit_list;
         public LimitAdapter() {
           super(FridgeActivity.this, R.layout.result_item);
+
           activity = FridgeActivity.this;
         }
 
@@ -84,10 +77,11 @@ public class FridgeActivity extends Activity {
             super(context,0,object);
             this.inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            consumelimit_list = object;
         }
 
         private class ViewHolder {
-            LinearLayout backcolor;
+            ImageButton delete;
             ImageView imageview1;
             ImageView imageview2;
             TextView textview1;
@@ -97,14 +91,15 @@ public class FridgeActivity extends Activity {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            ConsumeLimit_Items limit_items = this.getItem(position);
+            final ConsumeLimit_Items limit_items = this.getItem(position);
             ViewHolder holder;
+
 
             if (convertView == null) {
                 convertView = inflater.inflate(R.layout.result_item, null, false);
                 holder = new ViewHolder();
                 holder.position = position;
-                holder.backcolor = (LinearLayout)findViewById(R.id.item_layout);
+                holder.delete = (ImageButton) convertView.findViewById(R.id.deleteButton);
                 holder.textview1 = (TextView) convertView.findViewById(R.id.category);
                 holder.textview2 = (TextView) convertView.findViewById(R.id.consumelimit);
                 holder.imageview1 = (ImageView) convertView.findViewById(R.id.thumbnail);
@@ -114,24 +109,28 @@ public class FridgeActivity extends Activity {
                 holder = (ViewHolder) convertView.getTag();
                 holder.position = position;
             }
-
-            // switch(position){
-            //case 1:
-            //  holder.backcolor.setBackgroundColor(Color.parseColor("#aa2222"));
-            //  break;
-            //case 2:
-            //  holder.backcolor.setBackgroundColor(Color.parseColor("#33dd72"));
-            //  break;
-            //case 3:
-            //  holder.backcolor.setBackgroundColor(Color.parseColor("#4455bb"));
-            //  break;
-            //case 4:
-            //  holder.backcolor.setBackgroundColor(Color.parseColor("#2222ee"));
-            //  break;
-            //}
-
+            holder.delete.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v){
+                        LimitAdapter la = new LimitAdapter();
+                        ConsumeLimit_Items item = limit_items;
+                        ViewHolder holder = new ViewHolder();
+                        String[] code = {item.jan_code};
+                        DB db = new DB(FridgeActivity.this);
+                        db.delete(code);
+                        item_read();
+                        la.consumelimit_list.remove(holder.position);
+                        if(la.consumelimit_list.size() != 0){
+                            ListView listView = (ListView)FridgeActivity.this.findViewById(R.id.result_listview);
+                            listView.setAdapter(new LimitAdapter(FridgeActivity.this,la.consumelimit_list));
+                            //}else{
+                            //tv.setText("冷蔵庫の中にはぞうが入っています。");
+                            //tv.setVisibility(View.VISIBLE);
+                        }
+                    }
+                });
             holder.textview1.setText(limit_items.category);
-            holder.textview2.setText(limit_items.consumelimit);
+            holder.textview2.setText("後" + limit_items.consumelimit + "日");
             holder.imageview1.setImageResource(R.drawable.ncm_0188);
             holder.imageview2.setImageResource(R.drawable.cabbage);
             //new ImageLoader(holder, position, card).executeParallel();
@@ -174,6 +173,34 @@ public class FridgeActivity extends Activity {
             return icon;
         }
     }
+
+
+
+
+
+    //練習
+
+    private ToutchListView.DropListener onDrop = new ToutchListView.DropListener(){
+        @Override
+        public void drop(int from , int to){
+            ConsumeLimit_Items item = adapter.getItem(from);
+            adapter.remove(item);
+            adapter.insert(item,to);
+        }
+    };
+
+    private ToutchListView.RemoveListener onRemove = new ToutchListView.RemoveListener(){
+        @Override
+        public void remove(int which){
+            adapter.remove(adapter.getItem(which));
+        }
+    };
+
+
+
+
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
