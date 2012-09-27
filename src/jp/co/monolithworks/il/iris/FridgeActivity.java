@@ -33,8 +33,11 @@ public class FridgeActivity extends Activity {
         
         //consumelimit_list = new LinkedList<ConsumeLimit_Items>();
         item_read();
-
-        setListView();
+        if(isGridLayout == false){
+            setListView();
+        }else{
+            setGridView();
+        }
     }
 
     private List<ConsumeLimit_Items> item_read(){
@@ -65,59 +68,30 @@ public class FridgeActivity extends Activity {
         final List<ConsumeLimit_Items> consumelimit_list = item_read();
         LimitAdapter adapter = new LimitAdapter(this,consumelimit_list);
         if(consumelimit_list.size() != 0){
-            if(isGridLayout == false){
-                tv.setVisibility(View.GONE);
-                ListView lv = (ListView)findViewById(R.id.result_listView);
-                lv.setAdapter(new LimitAdapter(this,consumelimit_list));
-                lv.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
-                        ListView gridView = (ListView) parent;
-                        ConsumeLimit_Items item = consumelimit_list.get(position);
-                        String[] code = {item.thumbnaimFileName};
-                        DB db = new DB(FridgeActivity.this);
-                        db.delete(code);
-                        //item_read();
-                        reload();
-                        consumelimit_list.remove(position);
-                        if(consumelimit_list.size() != 0){
-                            gridView.setAdapter(new LimitAdapter(FridgeActivity.this,consumelimit_list));
-                        }else{
-                            tv.setText("冷蔵庫の中にはぞうが入っています。");
-                            tv.setVisibility(View.VISIBLE);
-                        }
-                    }
-                });
-            }else{
-                GridView gv = (GridView)findViewById(R.id.fridge_gridView);
-                gv.setAdapter(new LimitAdapter(this,consumelimit_list));
-                gv.setOnItemClickListener(new OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
-                        GridView gridView = (GridView) parent;
-                        ConsumeLimit_Items item = consumelimit_list.get(position);
-                        String[] code = {item.thumbnaimFileName};
-                        DB db = new DB(FridgeActivity.this);
-                        db.delete(code);
-                        //item_read();
-                        reload();
-                        consumelimit_list.remove(position);
-                        if(consumelimit_list.size() != 0){
-                            gridView.setAdapter(new LimitAdapter(FridgeActivity.this,consumelimit_list));
-                        }else{
-                            tv.setText("冷蔵庫の中にはぞうが入っています。");
-                            tv.setVisibility(View.VISIBLE);
-                        }
-                    }
-                });
-            }
+            tv.setVisibility(View.GONE);
+            ListView lv = (ListView)findViewById(R.id.result_listView);
+            lv.setAdapter(new LimitAdapter(this,consumelimit_list));
+        }else{
+            tv.setText("冷蔵庫の中にはぞうが入っています。");
+            tv.setVisibility(View.VISIBLE);
+        }
+}
+
+    public void setGridView(){
+        TextView tv = (TextView)findViewById(R.id.listview_empty);
+        List<ConsumeLimit_Items> consumelimit_list = item_read();
+        LimitAdapter adapter = new LimitAdapter(this,consumelimit_list);
+        if(consumelimit_list.size() != 0){
+            tv.setVisibility(View.GONE);
+            GridView gv = (GridView)findViewById(R.id.fridge_gridView);
+            gv.setAdapter(new LimitAdapter(this,consumelimit_list));
         }else{
             tv.setText("冷蔵庫の中にはぞうが入っています。");
             tv.setVisibility(View.VISIBLE);
         }
 
     }
-
+    
     private class LimitAdapter extends ArrayAdapter<ConsumeLimit_Items> {
         private LayoutInflater inflater;
         private Activity activity;
@@ -176,8 +150,12 @@ public class FridgeActivity extends Activity {
                         String[] code = {item.bar_code};
                         DB db = new DB(fa);
                         db.delete(code);
-                        fa.setListView(); 
+                        if(isGridLayout == false){
+                            fa.setListView(); 
+                        }else{
+                            fa.setGridView();
                         }
+                    }
                 });
             if(isGridLayout == false){
                 holder.textview1.setText(limit_items.category);
@@ -234,7 +212,7 @@ public class FridgeActivity extends Activity {
         }
     }
     
-    public void reload() {
+    public void quickReload() {
 
         Intent intent = getIntent();
         overridePendingTransition(0, 0);
@@ -245,6 +223,17 @@ public class FridgeActivity extends Activity {
         startActivity(intent);
     }
 
+    public void reload() {
+
+        Intent intent = getIntent();
+//        overridePendingTransition(0, 0);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        finish();
+
+//        overridePendingTransition(0, 0);
+        startActivity(intent);
+    }
+    
     /*
     //bundleに保存
     @Override
