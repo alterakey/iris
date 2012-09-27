@@ -19,12 +19,14 @@ import android.widget.Button;
 
 public class ResultAdapter extends ArrayAdapter<ResultData>{
     LayoutInflater mInflater;
+    ResultActivity mContext;
 
     int meet,fish,vegetable,drink,fruit,ham;
     int count=100;
 
-    public ResultAdapter(Context context,List<ResultData> objects){
+    public ResultAdapter(ResultActivity context,List<ResultData> objects){
         super(context,0,objects);
+        mContext = context;
         this.mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         Resources res = getContext().getResources();
@@ -52,6 +54,7 @@ public class ResultAdapter extends ArrayAdapter<ResultData>{
             holder.categoryText = (TextView)convertView.findViewById(R.id.category);
             holder.consumelimitText = (TextView)convertView.findViewById(R.id.consumelimit);
             holder.frameLayout = (FrameLayout)convertView.findViewById(R.id.f_layout);
+            holder.delete = (Button)convertView.findViewById(R.id.deleteButton);
 
             switch(count){
             case 0:
@@ -73,13 +76,14 @@ public class ResultAdapter extends ArrayAdapter<ResultData>{
                 holder.frameLayout.setBackgroundColor(ham);
                 break;
             }
-            
+
             convertView.setTag(holder);
         }else{
             holder = (ViewHolder) convertView.getTag();
         }
 
-        ResultData data = (ResultData)getItem(position);
+        final ResultData data = (ResultData)getItem(position);
+        final int transferPosition = position;
 
         holder.thumbnailView.setImageBitmap(data.thumbnailBitmap);
         holder.iconView.setImageBitmap(data.iconBitmap);
@@ -87,6 +91,14 @@ public class ResultAdapter extends ArrayAdapter<ResultData>{
         holder.categoryText.setTypeface( Typeface.DEFAULT_BOLD, Typeface.BOLD );
         holder.consumelimitText.setText(data.consumelimitText);
         holder.consumelimitText.setTypeface( Typeface.DEFAULT_BOLD, Typeface.BOLD );
+        holder.delete.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                ScanData sd = ScanData.getScanData();
+                sd.lists.remove(transferPosition);
+                mContext.setListView();
+            }
+        });
         return convertView;
     }
 
@@ -94,6 +106,7 @@ public class ResultAdapter extends ArrayAdapter<ResultData>{
         ImageView thumbnailView,iconView;
         TextView categoryText,consumelimitText;
         FrameLayout frameLayout;
+        Button delete;
     }
 
 }

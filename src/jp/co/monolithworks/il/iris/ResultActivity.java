@@ -61,33 +61,24 @@ public class ResultActivity extends Activity {
     @Override
     public void onResume(){
         super.onResume();
-
-        Log.w("resultActivity","onResume call");
         mScanData = ScanData.getScanData();
         mLists = new ArrayList<ResultData>();
-        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_search);
-        Bitmap cabbage = BitmapFactory.decodeResource(getResources(), R.drawable.cabbage);
 
         if(mScanData.lists!=null){
             mLists = mScanData.lists;
-            Log.w("resultActivity","mList is not null");
         }else{
-           Log.w("resultActivity","mList is null");
         }
 
-        ListView lv = (ListView)findViewById(R.id.result_listview);
+        ListView lv = (ListView)findViewById(R.id.result_listView);
         lv.setCacheColorHint(Color.TRANSPARENT);
-
         int position = POSITION_NOT_DELETE;
         Bundle extras = getIntent().getExtras();
         if(extras != null){
             position = extras.getInt("listDeletePosition");
         }
-
         if(position == POSITION_NOT_DELETE){
         	mAdapter = new ResultAdapter(this,mLists);
             lv.setAdapter(mAdapter);
-            Log.w("resultActivity","position is POSITION_NOT_DELETE");
         }else{
             mAdapter  = (ArrayAdapter<ResultData>)FridgeRegister.getState().get(ResultActivity.SELECTED_ADAPTER_DELETE_KEY);
             FridgeRegister.getState().remove(ResultActivity.SELECTED_ADAPTER_DELETE_KEY);
@@ -101,7 +92,6 @@ public class ResultActivity extends Activity {
 
         lv.setScrollingCacheEnabled(false);
 
-        //lv.setAdapter(new ResultAdapter(this,mLists));
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
@@ -127,7 +117,6 @@ public class ResultActivity extends Activity {
         lv.setEmptyView(emptyView);
 
         if(mAdapter.getCount() == 0){
-        	Log.w("resultactivity","mAdapter is 0");
             LinearLayout ll = (LinearLayout)findViewById(R.id.result_linearlayout);
             ll.setOnClickListener(new OnClickListener(){
                 @Override
@@ -251,4 +240,11 @@ public class ResultActivity extends Activity {
         db.insert(cv);
     }
 
+    public void setListView(){
+        mLists = mScanData.lists;
+        ListView lv = (ListView)findViewById(R.id.result_listView);
+        lv.setCacheColorHint(Color.TRANSPARENT);
+        mAdapter = new ResultAdapter(this,mLists);
+        lv.setAdapter(mAdapter);
+    }
 }
