@@ -150,7 +150,6 @@ public class FridgeActivity extends Activity {
                         }else{
                             fa.setGridView();
                         }
-                        Log.v("test","aaaaaaaaaaaaaaaaaaaa");
                     }
                 });
             if(isGridLayout == false){

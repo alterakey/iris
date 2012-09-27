@@ -26,7 +26,6 @@ public class CategoryActivity extends Activity {
 
         gridview.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView parent, View v, int position, long id) {
-                //Toast.makeText(CategoryActivity.this, "" + position, Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent();
                 setResult(RESULT_OK,intent);
                 finish();
@@ -43,13 +42,15 @@ public class CategoryActivity extends Activity {
     public class ImageAdapter extends BaseAdapter {
 
         private Context mContext;
+        private ConsumeLimit mConsumeLimit;
 
         public ImageAdapter(Context c) {
             mContext = c;
+            mConsumeLimit = new ConsumeLimit();
         }
 
         public int getCount() {
-            return 12;
+            return mConsumeLimit.limit.size();
         }
 
         public Object getItem(int position) {
