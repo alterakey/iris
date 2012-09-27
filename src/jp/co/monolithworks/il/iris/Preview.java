@@ -430,7 +430,7 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
                 
                 if(bmp != null){
                     Bitmap cabbage = BitmapFactory.decodeResource(getResources(), R.drawable.cabbage);
-                    ResultData resultData = new ResultData(bmp,cabbage,contents,"あと3日",barcodeImageName,contents);
+                    ResultData resultData = new ResultData(bmp,cabbage,contents,"3",barcodeImageName,contents);
                     mLists.add(resultData);
                     mScanData.lists = mLists;
                 }

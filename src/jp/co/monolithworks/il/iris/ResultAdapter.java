@@ -83,7 +83,7 @@ public class ResultAdapter extends ArrayAdapter<ResultData>{
         holder.iconView.setImageBitmap(data.iconBitmap);
         holder.categoryText.setText(data.categoryText);
         holder.categoryText.setTypeface( Typeface.DEFAULT_BOLD, Typeface.BOLD );
-        holder.consumelimitText.setText(data.consumelimitText);
+        holder.consumelimitText.setText(String.format("あと%s日",data.consumelimitText));
         holder.consumelimitText.setTypeface( Typeface.DEFAULT_BOLD, Typeface.BOLD );
         return convertView;
     }
