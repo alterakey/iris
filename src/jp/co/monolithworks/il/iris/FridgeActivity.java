@@ -20,20 +20,20 @@ public class FridgeActivity extends Activity {
         setListView();
     }
 
-    private List<ConsumeLimit_Items> item_read(Context c){
+    private List<ConsumeLimit_Items> item_read(){
         List<ConsumeLimit_Items> consumelimit_list = new LinkedList<ConsumeLimit_Items>();
-        DB db = new DB(c);
+        DB db = new DB(this);
         List<Map<String,String>> items = db.query();
 
         for(Map<String,String> item : items){
             ConsumeLimit_Items ci = new ConsumeLimit_Items();
             ci.category = item.get("category_name");
             ci.consumelimit = item.get("consume_limit");
-            ci.jan_code = item.get("jan_code");
+            ci.bar_code = item.get("bar_code");
             String thumbnailFileName = item.get("bar_code");
             ci.thumbnaimFileName = thumbnailFileName;
-            Bitmap bmp = BitmapManager.readBitmap(thumbnailFileName, this.getApplicationContext());
-            ImageView imageView = new ImageView(this.getApplicationContext());
+            Bitmap bmp = BitmapManager.readBitmap(thumbnailFileName, this);
+            ImageView imageView = new ImageView(this);
             imageView.setImageBitmap(bmp);
             ci.thumb = imageView;
             ci.thumb_bmp = bmp;
@@ -44,9 +44,9 @@ public class FridgeActivity extends Activity {
 
     private void setListView(){
         TextView tv = (TextView)findViewById(R.id.listview_empty);
-        List<ConsumeLimit_Items> consumelimit_list = item_read(this);
+        List<ConsumeLimit_Items> consumelimit_list = item_read();
         LimitAdapter adapter = new LimitAdapter(this,consumelimit_list);
-        ListView lv = (ListView)findViewById(R.id.result_listview);
+        ListView lv = (ListView)findViewById(R.id.result_listView);
         lv.setAdapter(adapter);
         lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         if(consumelimit_list.size() != 0){
@@ -76,7 +76,7 @@ public class FridgeActivity extends Activity {
         }
 
         private class ViewHolder {
-            ImageButton delete;
+            Button delete;
             ImageView imageview1;
             ImageView imageview2;
             TextView textview1;
@@ -94,7 +94,7 @@ public class FridgeActivity extends Activity {
                 convertView = inflater.inflate(R.layout.result_item, parent, false);
                 holder = new ViewHolder();
                 holder.position = position;
-                holder.delete = (ImageButton) convertView.findViewById(R.id.deleteButton);
+                holder.delete = (Button) convertView.findViewById(R.id.deleteButton);
                 holder.textview1 = (TextView) convertView.findViewById(R.id.category);
                 holder.textview2 = (TextView) convertView.findViewById(R.id.consumelimit);
                 holder.imageview1 = (ImageView) convertView.findViewById(R.id.thumbnail);
@@ -110,7 +110,7 @@ public class FridgeActivity extends Activity {
                     public void onClick(View v){
                         FridgeActivity fa = FridgeActivity.this;
                         ConsumeLimit_Items item = limit_items;
-                        String[] code = {item.jan_code};
+                        String[] code = {item.bar_code};
                         DB db = new DB(fa);
                         db.delete(code);
                         fa.setListView();                    }
@@ -127,7 +127,7 @@ public class FridgeActivity extends Activity {
     private class ConsumeLimit_Items{
         String category;
         String consumelimit;
-        String jan_code;
+        String bar_code;
         ImageView thumb;
         ImageView icon;
         Bitmap thumb_bmp;
@@ -149,8 +149,8 @@ public class FridgeActivity extends Activity {
             return consumelimit;
         }
 
-        public String getJan_code(){
-            return jan_code;
+        public String getBar_code(){
+            return bar_code;
         }
 
         public ImageView getThumb(){

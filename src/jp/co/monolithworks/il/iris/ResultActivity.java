@@ -96,16 +96,12 @@ public class ResultActivity extends Activity {
             mAdapter.remove(item);
             lv.setAdapter(mAdapter);
             lv.invalidateViews();
-            Log.w("resultActivity","position is not POSITION_NOT_DELETE");
             position = POSITION_NOT_DELETE;
         }
 
-        //lv.setAdapter(new ResultAdapter(this,mLists));
         lv.setScrollingCacheEnabled(false);
 
-        //ListView lv = (ListView)findViewById(R.id.list);
         //lv.setAdapter(new ResultAdapter(this,mLists));
-        //lv.setScrollingCacheEnabled(false);        lv.setAdapter(new ResultAdapter(this,mLists));
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
@@ -117,7 +113,6 @@ public class ResultActivity extends Activity {
                 ArrayAdapter<ResultData> adapter = (ArrayAdapter<ResultData>)listView.getAdapter();
 
                 Intent intent = new Intent();
-                //intent.setClass(ResultActivity.this, DetailActivity.class);
                 intent.setClass(ResultActivity.this, CategoryActivity.class);
                 startActivityForResult(intent,REQUEST_ITEM);
 
@@ -130,7 +125,7 @@ public class ResultActivity extends Activity {
 
         View emptyView = (View)findViewById(R.id.listview_empty);
         lv.setEmptyView(emptyView);
-        
+
         if(mAdapter.getCount() == 0){
         	Log.w("resultactivity","mAdapter is 0");
             LinearLayout ll = (LinearLayout)findViewById(R.id.result_linearlayout);
@@ -140,7 +135,7 @@ public class ResultActivity extends Activity {
                     Intent intent = new Intent();
                     intent.setClass(ResultActivity.this,ScanActivity.class);
                     startActivity(intent);
-                    
+
                     Vibrator vibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
                     vibrator.vibrate(40);
                 }

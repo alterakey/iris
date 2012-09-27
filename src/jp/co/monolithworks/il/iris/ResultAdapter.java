@@ -10,21 +10,23 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Button;
 
 public class ResultAdapter extends ArrayAdapter<ResultData>{
     LayoutInflater mInflater;
-    
+
     int meet,fish,vegetable,drink,fruit,ham;
     int count=100;
 
     public ResultAdapter(Context context,List<ResultData> objects){
         super(context,0,objects);
         this.mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        
+
         Resources res = getContext().getResources();
         meet = res.getColor(R.color.meet);
         fish = res.getColor(R.color.fish);
@@ -37,7 +39,7 @@ public class ResultAdapter extends ArrayAdapter<ResultData>{
     @Override
     public View getView(int position, View convertView,ViewGroup parent){
         ViewHolder holder;
-        
+
         if(convertView == null){
             convertView = this.mInflater.inflate(R.layout.result_item,parent,false);
             holder = new ViewHolder();
