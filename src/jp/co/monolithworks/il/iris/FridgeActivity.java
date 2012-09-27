@@ -15,7 +15,6 @@ import java.util.*;
 
 public class FridgeActivity extends Activity {
 
-    //public List<ConsumeLimit_Items> consumelimit_list;
     private boolean isGridLayout = false;
 
     public void onCreate(Bundle savedInstanceState){
@@ -24,15 +23,12 @@ public class FridgeActivity extends Activity {
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         isGridLayout = sp.getBoolean("SaveLayout", false);
-        
+
         if(isGridLayout == false){
             setContentView(R.layout.activity_result);
         }else{
             setContentView(R.layout.fridge_grid);
         }
-        
-        //consumelimit_list = new LinkedList<ConsumeLimit_Items>();
-        item_read();
         if(isGridLayout == false){
             setListView();
         }else{
@@ -64,13 +60,13 @@ public class FridgeActivity extends Activity {
     }
 
     private void setListView(){
-        final TextView tv = (TextView)findViewById(R.id.listview_empty);
-        final List<ConsumeLimit_Items> consumelimit_list = item_read();
+        TextView tv = (TextView)findViewById(R.id.listview_empty);
+        List<ConsumeLimit_Items> consumelimit_list = item_read();
         LimitAdapter adapter = new LimitAdapter(this,consumelimit_list);
+        ListView lv = (ListView)findViewById(R.id.result_listView);
+        lv.setAdapter(new LimitAdapter(this,consumelimit_list));
         if(consumelimit_list.size() != 0){
             tv.setVisibility(View.GONE);
-            ListView lv = (ListView)findViewById(R.id.result_listView);
-            lv.setAdapter(new LimitAdapter(this,consumelimit_list));
         }else{
             tv.setText("冷蔵庫の中にはぞうが入っています。");
             tv.setVisibility(View.VISIBLE);
@@ -81,17 +77,17 @@ public class FridgeActivity extends Activity {
         TextView tv = (TextView)findViewById(R.id.listview_empty);
         List<ConsumeLimit_Items> consumelimit_list = item_read();
         LimitAdapter adapter = new LimitAdapter(this,consumelimit_list);
+        GridView gv = (GridView)findViewById(R.id.fridge_gridView);
+        gv.setAdapter(new LimitAdapter(this,consumelimit_list));
         if(consumelimit_list.size() != 0){
             tv.setVisibility(View.GONE);
-            GridView gv = (GridView)findViewById(R.id.fridge_gridView);
-            gv.setAdapter(new LimitAdapter(this,consumelimit_list));
         }else{
             tv.setText("冷蔵庫の中にはぞうが入っています。");
             tv.setVisibility(View.VISIBLE);
         }
 
     }
-    
+
     private class LimitAdapter extends ArrayAdapter<ConsumeLimit_Items> {
         private LayoutInflater inflater;
         private Activity activity;
@@ -146,16 +142,16 @@ public class FridgeActivity extends Activity {
                     @Override
                     public void onClick(View v){
                         FridgeActivity fa = FridgeActivity.this;
-                        ConsumeLimit_Items item = limit_items;
-                        String[] code = {item.bar_code};
+                        String[] code = {limit_items.bar_code};
                         DB db = new DB(fa);
                         db.delete(code);
                         BitmapManager.deleteBitmap(item.thumbnaimFileName);
                         if(isGridLayout == false){
-                            fa.setListView(); 
+                            fa.setListView();
                         }else{
                             fa.setGridView();
                         }
+                        Log.v("test","aaaaaaaaaaaaaaaaaaaa");
                     }
                 });
             if(isGridLayout == false){
@@ -212,7 +208,7 @@ public class FridgeActivity extends Activity {
             return thumb_bmp;
         }
     }
-    
+
     public void quickReload() {
 
         Intent intent = getIntent();
@@ -234,7 +230,7 @@ public class FridgeActivity extends Activity {
 //        overridePendingTransition(0, 0);
         startActivity(intent);
     }
-    
+
     /*
     //bundleに保存
     @Override
@@ -250,7 +246,7 @@ public class FridgeActivity extends Activity {
         //Log.w("restore",isFirstBoot + "");
     }
     */
-    
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_fridge, menu);
@@ -261,7 +257,7 @@ public class FridgeActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent = new Intent();
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        
+
         switch (item.getItemId()) {
         case R.id.menu_grid:
             isGridLayout = true;
@@ -284,7 +280,7 @@ public class FridgeActivity extends Activity {
         }
         return true;
     }
-    
+
     @Override
     public boolean onPrepareOptionsMenu(Menu menu){
         if(isGridLayout==true){
