@@ -2,6 +2,8 @@ package jp.co.monolithworks.il.iris;
 
 import android.os.Bundle;
 import android.app.*;
+import android.preference.PreferenceManager;
+import android.app.Activity;
 import android.content.*;
 import android.view.*;
 import android.widget.*;
@@ -21,9 +23,14 @@ public class FridgeActivity extends Activity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        setContentView(R.layout.activity_result);
-        //setContentView(R.layout.fridge_grid);
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        isGridLayout = sp.getBoolean("SaveLayout", false);
         
+        if(isGridLayout == false){
+            setContentView(R.layout.activity_result);
+        }else{
+            setContentView(R.layout.fridge_grid);
+        }
         consumelimit_list = new LinkedList<ConsumeLimit_Items>();
         item_read(mContext);
 
@@ -31,7 +38,6 @@ public class FridgeActivity extends Activity {
     }
 
     private List<ConsumeLimit_Items> item_read(Context c){
-        List<ConsumeLimit_Items> consumelimit_list = new LinkedList<ConsumeLimit_Items>();
         DB db = new DB(c);
         List<Map<String,String>> items = db.query();
 
@@ -48,6 +54,7 @@ public class FridgeActivity extends Activity {
             ci.thumb = imageView;
             ci.thumb_bmp = bmp;
             consumelimit_list.add(ci);
+            Log.w("fridgeactivity","ci.category:"+ci.category);
         }
         return consumelimit_list;
     }
@@ -58,35 +65,51 @@ public class FridgeActivity extends Activity {
         final TextView tv = (TextView)findViewById(R.id.listview_empty);
 
         if(consumelimit_list.size() != 0){
-        	//XXX
-            tv.setVisibility(View.GONE);
-            ListView lv = (ListView)findViewById(R.id.result_listView);
-            lv.setAdapter(new LimitAdapter(this,consumelimit_list));
-            lv.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-            
-            //GridView gv = (GridView)findViewById(R.id.fridge_gridView);
-            //gv.setAdapter(new LimitAdapter(this,consumelimit_list));
-            //gv.setOnItemClickListener(new OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
-                    GridView gridView = (GridView) parent;
-                    ConsumeLimit_Items item = consumelimit_list.get(position);
-                    String[] code = {item.thumbnaimFileName};
-                    DB db = new DB(FridgeActivity.this);
-                    db.delete(code);
-                    item_read(mContext);
-                    consumelimit_list.remove(position);
-                    if(consumelimit_list.size() != 0){
-                        gridView.setAdapter(new LimitAdapter(FridgeActivity.this,consumelimit_list));
-                    }else{
-                    	//XXX
-                        tv.setText("冷蔵庫の中にはぞうが入っています。");
-                        tv.setVisibility(View.VISIBLE);
+            if(isGridLayout == false){
+                tv.setVisibility(View.GONE);
+                ListView lv = (ListView)findViewById(R.id.result_listView);
+                lv.setAdapter(new LimitAdapter(this,consumelimit_list));
+                lv.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
+                        ListView gridView = (ListView) parent;
+                        ConsumeLimit_Items item = consumelimit_list.get(position);
+                        String[] code = {item.thumbnaimFileName};
+                        DB db = new DB(FridgeActivity.this);
+                        db.delete(code);
+                        item_read(mContext);
+                        consumelimit_list.remove(position);
+                        if(consumelimit_list.size() != 0){
+                            gridView.setAdapter(new LimitAdapter(FridgeActivity.this,consumelimit_list));
+                        }else{
+                            tv.setText("冷蔵庫の中にはぞうが入っています。");
+                            tv.setVisibility(View.VISIBLE);
+                        }
                     }
-                }
-            });
+                });
+            }else{
+                GridView gv = (GridView)findViewById(R.id.fridge_gridView);
+                gv.setAdapter(new LimitAdapter(this,consumelimit_list));
+                gv.setOnItemClickListener(new OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
+                        GridView gridView = (GridView) parent;
+                        ConsumeLimit_Items item = consumelimit_list.get(position);
+                        String[] code = {item.thumbnaimFileName};
+                        DB db = new DB(FridgeActivity.this);
+                        db.delete(code);
+                        item_read(mContext);
+                        consumelimit_list.remove(position);
+                        if(consumelimit_list.size() != 0){
+                            gridView.setAdapter(new LimitAdapter(FridgeActivity.this,consumelimit_list));
+                        }else{
+                            tv.setText("冷蔵庫の中にはぞうが入っています。");
+                            tv.setVisibility(View.VISIBLE);
+                        }
+                    }
+                });
+            }
         }else{
-        	//XXX
             tv.setText("冷蔵庫の中にはぞうが入っています。");
             tv.setVisibility(View.VISIBLE);
         }
@@ -125,7 +148,11 @@ public class FridgeActivity extends Activity {
 
 
             if (convertView == null) {
-                convertView = inflater.inflate(R.layout.result_item, parent, false);
+                if(isGridLayout == true){
+                    convertView = inflater.inflate(R.layout.result_item_grid, parent, false);
+                }else{
+                	convertView = inflater.inflate(R.layout.result_item, parent, false);
+                }
                 holder = new ViewHolder();
                 holder.position = position;
                 holder.delete = (ImageButton) convertView.findViewById(R.id.deleteButton);
@@ -150,8 +177,12 @@ public class FridgeActivity extends Activity {
                         fa.setListView(); 
                         }
                 });
-            holder.textview1.setText(limit_items.category);
-            holder.textview2.setText("後" + limit_items.consumelimit + "日");
+            if(isGridLayout == false){
+                holder.textview1.setText(limit_items.category);
+                holder.textview2.setText("後" + limit_items.consumelimit + "日");
+            }else{
+                holder.textview2.setText(limit_items.consumelimit);
+            }
             holder.imageview1.setImageBitmap(limit_items.thumb_bmp);
             holder.imageview2.setImageResource(R.drawable.cabbage);
             //new ImageLoader(holder, position, card).executeParallel();
@@ -200,7 +231,34 @@ public class FridgeActivity extends Activity {
             return thumb_bmp;
         }
     }
+    
+    public void reload() {
 
+        Intent intent = getIntent();
+        overridePendingTransition(0, 0);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        finish();
+
+        overridePendingTransition(0, 0);
+        startActivity(intent);
+    }
+
+    /*
+    //bundleに保存
+    @Override
+    public void onSaveInstanceState(Bundle outState){
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("layoutState",isGridLayout);
+        //Log.w("onSaveInsanceState",isFirstBoot + "");
+    }
+
+    //bundleから復元
+    public void restore(Bundle state){
+        isGridLayout = state.getBoolean("layoutState");
+        //Log.w("restore",isFirstBoot + "");
+    }
+    */
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_fridge, menu);
@@ -210,13 +268,18 @@ public class FridgeActivity extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent = new Intent();
-
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        
         switch (item.getItemId()) {
         case R.id.menu_grid:
             isGridLayout = true;
+            sp.edit().putBoolean("SaveLayout", isGridLayout).commit();
+            reload();
             break;
         case R.id.menu_list:
             isGridLayout = false;
+            sp.edit().putBoolean("SaveLayout", isGridLayout).commit();
+            reload();
             break;
         case R.id.menu_settings:
             intent.setClass(this, SettingActivity.class);
