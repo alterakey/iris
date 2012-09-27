@@ -71,6 +71,8 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
     private int mPreviewHeight;
 
     private List<ResultData> mLists;
+    
+    private Thread mTrd;
 
     //シングルトン
     private RectFactory mRectFactory = RectFactory.getRectFactory();
@@ -97,7 +99,7 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
         mLists = new ArrayList<ResultData>();
-
+        
     }
     //アプリケーションからコントロールに対してカメラをセット
     public void setCamera(Camera camera) {
@@ -468,7 +470,7 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
         requestAutoFocus();
         isDecodeTakePicture = true;
         //1秒待って撮影処理(autofocusが効く前に撮影してしまう為)
-        Thread trd = new Thread(new Runnable(){
+        mTrd = new Thread(new Runnable(){
             public void run() {
                 try{
                     Thread.sleep(1000);
@@ -478,7 +480,7 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
                 mCamera.takePicture(null,null,mPictureListener);
             }
          });
-         trd.start();
+         mTrd.start();
     }
 
     private Camera.PictureCallback mPictureListener = new Camera.PictureCallback(){

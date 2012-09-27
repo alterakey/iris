@@ -75,7 +75,7 @@ public class ResultActivity extends Activity {
            Log.w("resultActivity","mList is null");
         }
 
-        ListView lv = (ListView)findViewById(R.id.result_listview);
+        ListView lv = (ListView)findViewById(R.id.result_listView);
         lv.setCacheColorHint(Color.TRANSPARENT);
 
         int position = POSITION_NOT_DELETE;

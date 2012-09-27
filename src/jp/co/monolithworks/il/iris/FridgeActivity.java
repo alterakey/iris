@@ -5,6 +5,7 @@ import android.app.*;
 import android.content.*;
 import android.view.*;
 import android.widget.*;
+import android.widget.AdapterView.OnItemClickListener;
 import android.graphics.*;
 import android.util.*;
 
@@ -12,10 +13,19 @@ import java.util.*;
 
 public class FridgeActivity extends Activity {
 
+    public List<ConsumeLimit_Items> consumelimit_list;
+    private Context mContext = this;
+    private boolean isGridLayout = false;
+
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+
         setContentView(R.layout.activity_result);
+        //setContentView(R.layout.fridge_grid);
+        
+        consumelimit_list = new LinkedList<ConsumeLimit_Items>();
+        item_read(mContext);
 
         setListView();
     }
@@ -43,16 +53,40 @@ public class FridgeActivity extends Activity {
     }
 
     private void setListView(){
-        TextView tv = (TextView)findViewById(R.id.listview_empty);
-        List<ConsumeLimit_Items> consumelimit_list = item_read(this);
-        LimitAdapter adapter = new LimitAdapter(this,consumelimit_list);
-        ListView lv = (ListView)findViewById(R.id.result_listview);
-        lv.setAdapter(adapter);
-        lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-        if(consumelimit_list.size() != 0){
-            tv.setVisibility(View.GONE);
-        }else{
 
+        //XXX
+        final TextView tv = (TextView)findViewById(R.id.listview_empty);
+
+        if(consumelimit_list.size() != 0){
+        	//XXX
+            tv.setVisibility(View.GONE);
+            ListView lv = (ListView)findViewById(R.id.result_listView);
+            lv.setAdapter(new LimitAdapter(this,consumelimit_list));
+            lv.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            
+            //GridView gv = (GridView)findViewById(R.id.fridge_gridView);
+            //gv.setAdapter(new LimitAdapter(this,consumelimit_list));
+            //gv.setOnItemClickListener(new OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
+                    GridView gridView = (GridView) parent;
+                    ConsumeLimit_Items item = consumelimit_list.get(position);
+                    String[] code = {item.thumbnaimFileName};
+                    DB db = new DB(FridgeActivity.this);
+                    db.delete(code);
+                    item_read(mContext);
+                    consumelimit_list.remove(position);
+                    if(consumelimit_list.size() != 0){
+                        gridView.setAdapter(new LimitAdapter(FridgeActivity.this,consumelimit_list));
+                    }else{
+                    	//XXX
+                        tv.setText("冷蔵庫の中にはぞうが入っています。");
+                        tv.setVisibility(View.VISIBLE);
+                    }
+                }
+            });
+        }else{
+        	//XXX
             tv.setText("冷蔵庫の中にはぞうが入っています。");
             tv.setVisibility(View.VISIBLE);
         }
@@ -113,7 +147,8 @@ public class FridgeActivity extends Activity {
                         String[] code = {item.jan_code};
                         DB db = new DB(fa);
                         db.delete(code);
-                        fa.setListView();                    }
+                        fa.setListView(); 
+                        }
                 });
             holder.textview1.setText(limit_items.category);
             holder.textview2.setText("後" + limit_items.consumelimit + "日");
@@ -173,22 +208,36 @@ public class FridgeActivity extends Activity {
     }
 
     @Override
-public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent = new Intent();
 
         switch (item.getItemId()) {
+        case R.id.menu_grid:
+            isGridLayout = true;
+            break;
+        case R.id.menu_list:
+            isGridLayout = false;
+            break;
         case R.id.menu_settings:
             intent.setClass(this, SettingActivity.class);
-            startActivity(intent);
-            break;
-        case R.id.menu_delete:
-            intent.setClass(this, DetailActivity.class);
             startActivity(intent);
             break;
         case R.id.menu_scan:
             intent.setClass(this, ScanActivity.class);
             startActivity(intent);
             break;
+        }
+        return true;
+    }
+    
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu){
+        if(isGridLayout==true){
+            menu.findItem(R.id.menu_grid).setVisible(false);
+            menu.findItem(R.id.menu_list).setVisible(true);
+        }else{
+            menu.findItem(R.id.menu_grid).setVisible(true);
+            menu.findItem(R.id.menu_list).setVisible(false);
         }
         return true;
     }
