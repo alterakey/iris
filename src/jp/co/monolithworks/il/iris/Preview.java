@@ -422,8 +422,8 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
                 Vibrator vibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
                 vibrator.vibrate(40);
 
-                ToneGenerator toneGenerator = new ToneGenerator(AudioManager.STREAM_SYSTEM, ToneGenerator.MAX_VOLUME);
-                toneGenerator.startTone(ToneGenerator.TONE_PROP_BEEP);
+                //ToneGenerator toneGenerator = new ToneGenerator(AudioManager.STREAM_SYSTEM, ToneGenerator.MAX_VOLUME);
+                //toneGenerator.startTone(ToneGenerator.TONE_PROP_BEEP);
 
                 String barcodeImageName = BitmapManager.saveBitmap(data,mContext,mPreviewWidth,mPreviewHeight);
                 Bitmap bmp = BitmapManager.readBitmap(barcodeImageName,mContext);

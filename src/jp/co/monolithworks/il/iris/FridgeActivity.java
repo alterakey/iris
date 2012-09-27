@@ -15,8 +15,7 @@ import java.util.*;
 
 public class FridgeActivity extends Activity {
 
-    public List<ConsumeLimit_Items> consumelimit_list;
-    private Context mContext = this;
+    //public List<ConsumeLimit_Items> consumelimit_list;
     private boolean isGridLayout = false;
 
     public void onCreate(Bundle savedInstanceState){
@@ -31,25 +30,27 @@ public class FridgeActivity extends Activity {
         }else{
             setContentView(R.layout.fridge_grid);
         }
-        consumelimit_list = new LinkedList<ConsumeLimit_Items>();
-        item_read(mContext);
+        
+        //consumelimit_list = new LinkedList<ConsumeLimit_Items>();
+        item_read();
 
         setListView();
     }
 
-    private List<ConsumeLimit_Items> item_read(Context c){
-        DB db = new DB(c);
+    private List<ConsumeLimit_Items> item_read(){
+        List<ConsumeLimit_Items> consumelimit_list = new LinkedList<ConsumeLimit_Items>();
+        DB db = new DB(this);
         List<Map<String,String>> items = db.query();
 
         for(Map<String,String> item : items){
             ConsumeLimit_Items ci = new ConsumeLimit_Items();
             ci.category = item.get("category_name");
             ci.consumelimit = item.get("consume_limit");
-            ci.jan_code = item.get("jan_code");
+            ci.bar_code = item.get("bar_code");
             String thumbnailFileName = item.get("bar_code");
             ci.thumbnaimFileName = thumbnailFileName;
-            Bitmap bmp = BitmapManager.readBitmap(thumbnailFileName, this.getApplicationContext());
-            ImageView imageView = new ImageView(this.getApplicationContext());
+            Bitmap bmp = BitmapManager.readBitmap(thumbnailFileName, this);
+            ImageView imageView = new ImageView(this);
             imageView.setImageBitmap(bmp);
             ci.thumb = imageView;
             ci.thumb_bmp = bmp;
@@ -60,10 +61,9 @@ public class FridgeActivity extends Activity {
     }
 
     private void setListView(){
-
-        //XXX
         final TextView tv = (TextView)findViewById(R.id.listview_empty);
-
+        final List<ConsumeLimit_Items> consumelimit_list = item_read();
+        LimitAdapter adapter = new LimitAdapter(this,consumelimit_list);
         if(consumelimit_list.size() != 0){
             if(isGridLayout == false){
                 tv.setVisibility(View.GONE);
@@ -77,7 +77,8 @@ public class FridgeActivity extends Activity {
                         String[] code = {item.thumbnaimFileName};
                         DB db = new DB(FridgeActivity.this);
                         db.delete(code);
-                        item_read(mContext);
+                        //item_read();
+                        reload();
                         consumelimit_list.remove(position);
                         if(consumelimit_list.size() != 0){
                             gridView.setAdapter(new LimitAdapter(FridgeActivity.this,consumelimit_list));
@@ -98,7 +99,8 @@ public class FridgeActivity extends Activity {
                         String[] code = {item.thumbnaimFileName};
                         DB db = new DB(FridgeActivity.this);
                         db.delete(code);
-                        item_read(mContext);
+                        //item_read();
+                        reload();
                         consumelimit_list.remove(position);
                         if(consumelimit_list.size() != 0){
                             gridView.setAdapter(new LimitAdapter(FridgeActivity.this,consumelimit_list));
@@ -133,7 +135,7 @@ public class FridgeActivity extends Activity {
         }
 
         private class ViewHolder {
-            ImageButton delete;
+            Button delete;
             ImageView imageview1;
             ImageView imageview2;
             TextView textview1;
@@ -155,7 +157,7 @@ public class FridgeActivity extends Activity {
                 }
                 holder = new ViewHolder();
                 holder.position = position;
-                holder.delete = (ImageButton) convertView.findViewById(R.id.deleteButton);
+                holder.delete = (Button) convertView.findViewById(R.id.deleteButton);
                 holder.textview1 = (TextView) convertView.findViewById(R.id.category);
                 holder.textview2 = (TextView) convertView.findViewById(R.id.consumelimit);
                 holder.imageview1 = (ImageView) convertView.findViewById(R.id.thumbnail);
@@ -171,7 +173,7 @@ public class FridgeActivity extends Activity {
                     public void onClick(View v){
                         FridgeActivity fa = FridgeActivity.this;
                         ConsumeLimit_Items item = limit_items;
-                        String[] code = {item.jan_code};
+                        String[] code = {item.bar_code};
                         DB db = new DB(fa);
                         db.delete(code);
                         fa.setListView(); 
@@ -193,7 +195,7 @@ public class FridgeActivity extends Activity {
     private class ConsumeLimit_Items{
         String category;
         String consumelimit;
-        String jan_code;
+        String bar_code;
         ImageView thumb;
         ImageView icon;
         Bitmap thumb_bmp;
@@ -215,8 +217,8 @@ public class FridgeActivity extends Activity {
             return consumelimit;
         }
 
-        public String getJan_code(){
-            return jan_code;
+        public String getBar_code(){
+            return bar_code;
         }
 
         public ImageView getThumb(){
