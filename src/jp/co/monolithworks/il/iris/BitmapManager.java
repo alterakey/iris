@@ -2,6 +2,7 @@ package jp.co.monolithworks.il.iris;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -13,9 +14,12 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 
 public class BitmapManager {
-	
+    
     public static String saveBitmap(byte[] data,Context context,int previewWidth,int previewHeight){
-        //画像を保存(data/data/package_name/files)
+        
+        String directory = ConstantDefinition.directory;
+        
+        //画像を保存
         int[] rgb = new int[(previewWidth * previewHeight)];//ARGB8888の画素の配列
         String fileName = null;
         Bitmap bmp=null;
@@ -26,35 +30,39 @@ public class BitmapManager {
 
         Log.w("ScanActivity","mPreviewWidth"+previewWidth);
         Log.w("ScanActivity","mPreviewHeight"+previewHeight);
-
-	        try{
-	            //ARGB8888でからのビットマップ作成
-	            bmp = Bitmap.createBitmap(previewWidth,previewHeight,Bitmap.Config.ARGB_8888);
-	            decoder.decodeYUV420SP(rgb,data,previewWidth,previewHeight);//変換
-	            //変換した画素からビットマップにセット
-	            bmp.setPixels(rgb,0,previewWidth,0,0,previewWidth,previewHeight);
-	            try{
-	                //画像保存処理
-	                FileOutputStream out = context.openFileOutput(fileName,Context.MODE_WORLD_READABLE);
-	                bmp.compress(Bitmap.CompressFormat.JPEG,100,out);
-	                out.close();
-	            }catch(Exception e){
-	                Log.w("ScanActivity","itemPhoto save Exception");
-	            }
-	        }catch(Exception e){
-	            Log.w("ScanActivity","itemPhoto create Exception");
-	        }
+        
+        Log.w("ScanActivity","filename:"+fileName);
+        Log.w("ScanActivity","directory:"+directory);
+        
+            try{
+            //ARGB8888でからのビットマップ作成
+                bmp = Bitmap.createBitmap(previewWidth,previewHeight,Bitmap.Config.ARGB_8888);
+                decoder.decodeYUV420SP(rgb,data,previewWidth,previewHeight);//変換
+                //変換した画素からビットマップにセット
+                bmp.setPixels(rgb,0,previewWidth,0,0,previewWidth,previewHeight);
+                try{
+                   //画像保存処理
+                    FileOutputStream out = new FileOutputStream(directory+fileName);
+                    bmp.compress(Bitmap.CompressFormat.JPEG,100,out);
+                    out.close();
+                }catch(Exception e){
+                    Log.w("ScanActivity","itemPhoto save Exception");
+                }
+            }catch(Exception e){
+                Log.w("ScanActivity","itemPhoto create Exception");
+            }
         return fileName;
     }
 
     public static String pictureSaveBitmap(byte[] data,Context context,int previewWidth,int previewHeight){
+        String directory = ConstantDefinition.directory;
         String fileName = null;
         fileName = "iris" + String.valueOf(System.currentTimeMillis()) + ".jpg";
         Bitmap bitmap = BitmapFactory.decodeByteArray(data,0,data.length,null);
         Bitmap bmp = Bitmap.createScaledBitmap(bitmap, previewWidth, previewHeight, true);
         try{
             //画像保存処理
-            FileOutputStream out = context.openFileOutput(fileName,Context.MODE_WORLD_READABLE);
+        	FileOutputStream out = new FileOutputStream(directory+fileName);
             bmp.compress(Bitmap.CompressFormat.JPEG,100,out);
             out.close();
         }catch(Exception e){
@@ -64,10 +72,11 @@ public class BitmapManager {
     }
     
     public static Bitmap readBitmap(String fileName,Context context){
-        //画像読み込み(data/data/package_name/files)
+        //画像読み込み()
+        String directory = ConstantDefinition.directory;
         Bitmap bm = null;
         try{
-            FileInputStream in = context.openFileInput(fileName);
+            FileInputStream in = new FileInputStream(directory+fileName);
             BufferedInputStream binput = new BufferedInputStream(in);
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             byte[] w = new byte[1024];
@@ -84,6 +93,18 @@ public class BitmapManager {
             Log.w("ScanActivity","itemPhoto read IOException");
         }
     	return bm;
+    }
+    
+    public static Boolean deleteBitmap(String fileName){
+        String directory = ConstantDefinition.directory;
+        try{
+            File file = new File(directory+fileName);
+            file.delete();
+            return true;
+        }catch(Exception e){
+            
+            return false;
+        }
     }
 
 }
