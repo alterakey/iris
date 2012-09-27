@@ -1,9 +1,13 @@
 package jp.co.monolithworks.il.iris;
 
 import android.os.Bundle;
+<<<<<<< Updated upstream
 import android.app.*;
 import android.preference.PreferenceManager;
 import android.app.Activity;
+=======
+import android.app.ListActivity;
+>>>>>>> Stashed changes
 import android.content.*;
 import android.view.*;
 import android.widget.*;
@@ -13,7 +17,7 @@ import android.util.*;
 
 import java.util.*;
 
-public class FridgeActivity extends Activity {
+public class FridgeActivity extends ListActivity {
 
     private boolean isGridLayout = false;
 
@@ -90,12 +94,10 @@ public class FridgeActivity extends Activity {
 
     private class LimitAdapter extends ArrayAdapter<ConsumeLimit_Items> {
         private LayoutInflater inflater;
-        private Activity activity;
         public  List<ConsumeLimit_Items> consumelimit_list;
         public LimitAdapter() {
           super(FridgeActivity.this, R.layout.result_item);
 
-          activity = FridgeActivity.this;
         }
 
         public LimitAdapter(Context context,List<ConsumeLimit_Items> object) {
@@ -245,6 +247,34 @@ public class FridgeActivity extends Activity {
         //Log.w("restore",isFirstBoot + "");
     }
     */
+
+
+
+
+
+    //練習
+
+    private ToutchListView.DropListener onDrop = new ToutchListView.DropListener(){
+        @Override
+        public void drop(int from , int to){
+            ConsumeLimit_Items item = adapter.getItem(from);
+            adapter.remove(item);
+            adapter.insert(item,to);
+        }
+    };
+
+    private ToutchListView.RemoveListener onRemove = new ToutchListView.RemoveListener(){
+        @Override
+        public void remove(int which){
+            adapter.remove(adapter.getItem(which));
+        }
+    };
+
+
+
+
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
