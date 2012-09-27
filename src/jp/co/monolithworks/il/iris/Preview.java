@@ -15,12 +15,16 @@ import android.content.Context;
 import java.io.IOException;
 import android.util.Log;
 import android.widget.Toast;
+import android.os.Environment;
 import android.os.Vibrator;
 import android.media.ToneGenerator;
 import android.media.AudioManager;
 import android.widget.ImageView;
+import android.content.pm.PackageManager;
+
 
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.FileNotFoundException;

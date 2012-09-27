@@ -145,6 +145,7 @@ public class FridgeActivity extends Activity {
                         String[] code = {limit_items.bar_code};
                         DB db = new DB(fa);
                         db.delete(code);
+                        BitmapManager.deleteBitmap(item.thumbnaimFileName);
                         if(isGridLayout == false){
                             fa.setListView();
                         }else{

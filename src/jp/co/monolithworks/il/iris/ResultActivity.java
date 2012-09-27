@@ -1,5 +1,6 @@
 package jp.co.monolithworks.il.iris;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -7,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Vibrator;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -56,6 +58,22 @@ public class ResultActivity extends Activity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_result);
+        
+        //ストレージのチェック
+        String storageCheck = Environment.getExternalStorageState();
+        if(!storageCheck.equalsIgnoreCase(Environment.MEDIA_MOUNTED)){
+            Toast.makeText(this,"SDカードが使用出来ません。終了します。",Toast.LENGTH_SHORT).show();
+            finish();
+        }
+        
+        String directory = ConstantDefinition.directory;
+        File file = new File(directory);
+        if(!file.exists()){
+            file.mkdir();
+            Log.w("scanactivity","mkdir");
+        }else{
+        	Log.w("scanactivity","not mkdir");
+        }
     }
 
     @Override
