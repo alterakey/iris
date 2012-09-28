@@ -39,7 +39,7 @@ import android.widget.ListView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
-public class ResultActivity extends ListActivity {
+public class ResultActivity extends Activity {
 
     private ScanData mScanData;
     private SQLiteDatabase mDb;
@@ -61,10 +61,10 @@ public class ResultActivity extends ListActivity {
 
         //ストレージのチェック
         String storageCheck = Environment.getExternalStorageState();
-        if(!storageCheck.equalsIgnoreCase(Environment.MEDIA_MOUNTED)){
-            Toast.makeText(this,"SDカードが使用出来ません。終了します。",Toast.LENGTH_SHORT).show();
-            finish();
-        }
+//        if(!storageCheck.equalsIgnoreCase(Environment.MEDIA_MOUNTED)){
+//            Toast.makeText(this,"SDカードが使用出来ません。終了します。",Toast.LENGTH_SHORT).show();
+//            finish();
+//        }
 
         String directory = ConstantDefinition.directory;
         File file = new File(directory);
@@ -113,8 +113,8 @@ public class ResultActivity extends ListActivity {
         //ListView lv = (ListView)findViewById(R.id.list);
         //lv.setAdapter(new ResultAdapter(this,mLists));
         //lv.setScrollingCacheEnabled(false);
-        setListAdapter(new ResultAdapter(this,mLists));
-        getListView().setOnItemClickListener(new AdapterView.OnItemClickListener(){
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                 int position, long id) {

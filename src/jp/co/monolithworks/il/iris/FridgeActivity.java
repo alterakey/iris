@@ -1,13 +1,10 @@
 package jp.co.monolithworks.il.iris;
 
 import android.os.Bundle;
-<<<<<<< Updated upstream
 import android.app.*;
 import android.preference.PreferenceManager;
 import android.app.Activity;
-=======
 import android.app.ListActivity;
->>>>>>> Stashed changes
 import android.content.*;
 import android.view.*;
 import android.widget.*;
@@ -147,7 +144,7 @@ public class FridgeActivity extends ListActivity {
                         String[] code = {limit_items.bar_code};
                         DB db = new DB(fa);
                         db.delete(code);
-                        BitmapManager.deleteBitmap(item.thumbnaimFileName);
+                        BitmapManager.deleteBitmap(limit_items.thumbnaimFileName);
                         if(isGridLayout == false){
                             fa.setListView();
                         }else{
@@ -247,31 +244,6 @@ public class FridgeActivity extends ListActivity {
         //Log.w("restore",isFirstBoot + "");
     }
     */
-
-
-
-
-
-    //練習
-
-    private ToutchListView.DropListener onDrop = new ToutchListView.DropListener(){
-        @Override
-        public void drop(int from , int to){
-            ConsumeLimit_Items item = adapter.getItem(from);
-            adapter.remove(item);
-            adapter.insert(item,to);
-        }
-    };
-
-    private ToutchListView.RemoveListener onRemove = new ToutchListView.RemoveListener(){
-        @Override
-        public void remove(int which){
-            adapter.remove(adapter.getItem(which));
-        }
-    };
-
-
-
 
 
 
