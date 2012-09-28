@@ -64,7 +64,7 @@ public class FridgeActivity extends Activity {
         TextView tv = (TextView)findViewById(R.id.listview_empty);
         List<ConsumeLimit_Items> consumelimit_list = item_read();
         LimitAdapter adapter = new LimitAdapter(this,consumelimit_list);
-        ListView lv = (ListView)findViewById(R.id.result_list);
+        ListView lv = (ListView)findViewById(R.id.result_listView);
         lv.setAdapter(new LimitAdapter(this,consumelimit_list));
         if(consumelimit_list.size() != 0){
             tv.setVisibility(View.GONE);

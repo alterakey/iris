@@ -49,7 +49,7 @@ public class ResultActivity extends Activity {
     public static final String SELECTED_ITEM_DELETE_KEY = "ResultActivity_item_delete";
     public static final String SELECTED_ADAPTER_DELETE_KEY = "ResultActivity_adapter_delete";
     private final static int REQUEST_ITEM = 0;
-
+    private ListView mListView;
     private Context mContext = this;
     private ArrayAdapter<ResultData> mAdapter;
 
@@ -61,10 +61,10 @@ public class ResultActivity extends Activity {
 
         //ストレージのチェック
         String storageCheck = Environment.getExternalStorageState();
-//        if(!storageCheck.equalsIgnoreCase(Environment.MEDIA_MOUNTED)){
-//            Toast.makeText(this,"SDカードが使用出来ません。終了します。",Toast.LENGTH_SHORT).show();
-//            finish();
-//        }
+        if(!storageCheck.equalsIgnoreCase(Environment.MEDIA_MOUNTED)){
+            Toast.makeText(this,"SDカードが使用出来ません。終了します。",Toast.LENGTH_SHORT).show();
+            finish();
+        }
 
         String directory = ConstantDefinition.directory;
         File file = new File(directory);
@@ -82,60 +82,24 @@ public class ResultActivity extends Activity {
         mScanData = ScanData.getScanData();
         mLists = new ArrayList<ResultData>();
 
+        mListView = (ListView)findViewById(R.id.result_listView);
+        mListView.setCacheColorHint(Color.TRANSPARENT);
+
         if(mScanData.lists!=null){
             mLists = mScanData.lists;
         }else{
         }
 
-        ListView lv = (ListView)findViewById(R.id.result_list);
-        lv.setCacheColorHint(Color.TRANSPARENT);
         int position = POSITION_NOT_DELETE;
         Bundle extras = getIntent().getExtras();
         if(extras != null){
             position = extras.getInt("listDeletePosition");
         }
-        if(position == POSITION_NOT_DELETE){
-        	mAdapter = new ResultAdapter(this,mLists);
-            lv.setAdapter(mAdapter);
-        }else{
-            mAdapter  = (ArrayAdapter<ResultData>)FridgeRegister.getState().get(ResultActivity.SELECTED_ADAPTER_DELETE_KEY);
-            FridgeRegister.getState().remove(ResultActivity.SELECTED_ADAPTER_DELETE_KEY);
-            ResultData item  = (ResultData)FridgeRegister.getState().get(ResultActivity.SELECTED_ITEM_DELETE_KEY);
-            FridgeRegister.getState().remove(ResultActivity.SELECTED_ITEM_DELETE_KEY);
-            mAdapter.remove(item);
-            lv.setAdapter(mAdapter);
-            lv.invalidateViews();
-            position = POSITION_NOT_DELETE;
-        }
 
-        lv.setScrollingCacheEnabled(false);
+        setListView(position);
 
-        //ListView lv = (ListView)findViewById(R.id.list);
-        //lv.setAdapter(new ResultAdapter(this,mLists));
-        //lv.setScrollingCacheEnabled(false);
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-			
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                int position, long id) {
-                // TODO Auto-generated method stub
-                ListView listView = (ListView) parent;
-
-                ResultData item = (ResultData)listView.getItemAtPosition(position);
-                ArrayAdapter<ResultData> adapter = (ArrayAdapter<ResultData>)listView.getAdapter();
-
-                Intent intent = new Intent();
-                intent.setClass(ResultActivity.this, CategoryActivity.class);
-                startActivityForResult(intent,REQUEST_ITEM);
-
-                FridgeRegister.getState().put(SELECTED_ITEM_KEY,mLists.get(position));
-                FridgeRegister.getState().put(SELECTED_ADAPTER_DELETE_KEY,adapter);
-                FridgeRegister.getState().put(SELECTED_ITEM_DELETE_KEY,item);
-                FridgeRegister.setListPosition(position);
-                }
-        });
         View emptyView = (View)findViewById(R.id.listview_empty);
-        lv.setEmptyView(emptyView);
+        mListView.setEmptyView(emptyView);
 
         if(mAdapter.getCount() == 0){
             LinearLayout ll = (LinearLayout)findViewById(R.id.result_linearlayout);
@@ -153,9 +117,57 @@ public class ResultActivity extends Activity {
         }
     }
 
+    private void setListView(int position){
+
+        if(position == POSITION_NOT_DELETE){
+        	mAdapter = new ResultAdapter(this,mLists);
+            mListView.setAdapter(mAdapter);
+        }else{
+            mAdapter  = (ArrayAdapter<ResultData>)FridgeRegister.getState().get(ResultActivity.SELECTED_ADAPTER_DELETE_KEY);
+            FridgeRegister.getState().remove(ResultActivity.SELECTED_ADAPTER_DELETE_KEY);
+            ResultData item  = (ResultData)FridgeRegister.getState().get(ResultActivity.SELECTED_ITEM_DELETE_KEY);
+            FridgeRegister.getState().remove(ResultActivity.SELECTED_ITEM_DELETE_KEY);
+            mAdapter.remove(item);
+            mListView.setAdapter(mAdapter);
+            mListView.invalidateViews();
+            position = POSITION_NOT_DELETE;
+        }
+
+        mListView.setScrollingCacheEnabled(false);
+
+        //ListView mListView = (ListView)findViewById(R.id.list);
+        //mListView.setAdapter(new ResultAdapter(this,mLists));
+        //mListView.setScrollingCacheEnabled(false);
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                // TODO Auto-generated method stub
+                ListView listView = (ListView) parent;
+
+                ResultData item = (ResultData)listView.getItemAtPosition(position);
+                ArrayAdapter<ResultData> adapter = (ArrayAdapter<ResultData>)listView.getAdapter();
+
+                Intent intent = new Intent();
+                intent.setClass(ResultActivity.this, CategoryActivity.class);
+                intent.putExtra("position", position);
+                startActivityForResult(intent,REQUEST_ITEM);
+
+                FridgeRegister.getState().put(SELECTED_ITEM_KEY,mLists.get(position));
+                FridgeRegister.getState().put(SELECTED_ADAPTER_DELETE_KEY,adapter);
+                FridgeRegister.getState().put(SELECTED_ITEM_DELETE_KEY,item);
+                FridgeRegister.setListPosition(position);
+            }
+        });
+    }
+
+
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (requestCode == REQUEST_ITEM && resultCode == RESULT_OK) {
             Bundle extras = intent.getExtras();
+            //mListView = (listView)findViewById(R.id.result_listView);
+            setListView();
             if (extras != null) {
             }
             Toast.makeText(this, "戻りました。", Toast.LENGTH_SHORT).show();
@@ -263,9 +275,9 @@ public class ResultActivity extends Activity {
 
     public void setListView(){
         mLists = mScanData.lists;
-        ListView lv = (ListView)findViewById(R.id.result_list);
-        lv.setCacheColorHint(Color.TRANSPARENT);
+        ListView mListView = (ListView)findViewById(R.id.result_listView);
+        mListView.setCacheColorHint(Color.TRANSPARENT);
         mAdapter = new ResultAdapter(this,mLists);
-        lv.setAdapter(mAdapter);
+        mListView.setAdapter(mAdapter);
     }
 }

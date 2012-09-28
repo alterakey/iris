@@ -16,19 +16,29 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.util.Log;
 
 public class CategoryActivity extends Activity {
+
+	private int mPosition;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category);
+        mPosition = getIntent().getIntExtra("position",0);
 
         GridView gridview = (GridView) findViewById(R.id.gridView);
         gridview.setAdapter(new ImageAdapter(this));
 
         gridview.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView parent, View v, int position, long id) {
+             	String category = ((TextView)v.findViewById(R.id.category)).getText().toString();
+             	String consumelimit = ((TextView)v.findViewById(R.id.consumelimit)).getText().toString();
+                ResultData rd = ScanData.getScanData().lists.get(mPosition);
+                rd.categoryText = category;
+                rd.consumelimitText = consumelimit;
+                ScanData.getScanData().lists.set(mPosition,rd);
                 Intent intent = new Intent();
                 setResult(RESULT_OK,intent);
                 finish();
@@ -67,7 +77,6 @@ public class CategoryActivity extends Activity {
         }
 
         private class ViewHolder {
-            Button delete;
             ImageView thumb;
             ImageView icon;
             TextView category;
@@ -79,11 +88,10 @@ public class CategoryActivity extends Activity {
           ViewHolder holder;
 
             if (convertView == null) {
-                    convertView = inflater.inflate(R.layout.result_item_grid, parent, false);
-                
+                    convertView = inflater.inflate(R.layout.grid_category, parent, false);
+
                 holder = new ViewHolder();
                 holder.position = position;
-                holder.delete = (Button) convertView.findViewById(R.id.deleteButton);
                 holder.category = (TextView) convertView.findViewById(R.id.category);
                 holder.consumelimit = (TextView) convertView.findViewById(R.id.consumelimit);
                 holder.thumb = (ImageView) convertView.findViewById(R.id.thumbnail);
@@ -93,7 +101,8 @@ public class CategoryActivity extends Activity {
                 holder = (ViewHolder) convertView.getTag();
                 holder.position = position;
             }
-            holder.consumelimit.setText(mConsumeLimit.limit[position][1]);
+            holder.category.setText(mConsumeLimit.limit[position][0] + "");
+            holder.consumelimit.setText(mConsumeLimit.limit[position][1] + "日");
             return convertView;
         }
     }
