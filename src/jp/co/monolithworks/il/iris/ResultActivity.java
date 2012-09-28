@@ -87,7 +87,7 @@ public class ResultActivity extends Activity {
         }else{
         }
 
-        ListView lv = (ListView)findViewById(R.id.result_listView);
+        ListView lv = (ListView)findViewById(R.id.result_list);
         lv.setCacheColorHint(Color.TRANSPARENT);
         int position = POSITION_NOT_DELETE;
         Bundle extras = getIntent().getExtras();
@@ -134,7 +134,6 @@ public class ResultActivity extends Activity {
                 FridgeRegister.setListPosition(position);
                 }
         });
-
         View emptyView = (View)findViewById(R.id.listview_empty);
         lv.setEmptyView(emptyView);
 
@@ -264,7 +263,7 @@ public class ResultActivity extends Activity {
 
     public void setListView(){
         mLists = mScanData.lists;
-        ListView lv = (ListView)findViewById(R.id.result_listView);
+        ListView lv = (ListView)findViewById(R.id.result_list);
         lv.setCacheColorHint(Color.TRANSPARENT);
         mAdapter = new ResultAdapter(this,mLists);
         lv.setAdapter(mAdapter);

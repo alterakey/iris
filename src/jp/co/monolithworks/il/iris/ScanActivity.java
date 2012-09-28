@@ -37,6 +37,9 @@ public class ScanActivity extends Activity
     private Camera mCamera;
     private CameraOverlayView mCameraOverLayView;
 
+    private int mPhotographTime;
+    private int mDelayTime = 2000;
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -90,11 +93,15 @@ public class ScanActivity extends Activity
         ImageView shutterButton = (ImageView)findViewById(R.id.shutter_button);
         shutterButton.setOnClickListener(new OnClickListener(){
         	public void onClick(View v){
-        		//写真撮影処理
-                mPreview.takePicture();
+                int nowTime = (int) System.currentTimeMillis();
+                if((nowTime - mPhotographTime) > mDelayTime){
+                    //写真撮影処理
+                    mPreview.takePicture();
+                    mPhotographTime = nowTime;
+                }
         	}
         });
-        
+
     }
 
     @Override

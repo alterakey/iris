@@ -14,7 +14,7 @@ import android.util.*;
 
 import java.util.*;
 
-public class FridgeActivity extends ListActivity {
+public class FridgeActivity extends Activity {
 
     private boolean isGridLayout = false;
 
@@ -64,7 +64,7 @@ public class FridgeActivity extends ListActivity {
         TextView tv = (TextView)findViewById(R.id.listview_empty);
         List<ConsumeLimit_Items> consumelimit_list = item_read();
         LimitAdapter adapter = new LimitAdapter(this,consumelimit_list);
-        ListView lv = (ListView)findViewById(R.id.result_listView);
+        ListView lv = (ListView)findViewById(R.id.result_list);
         lv.setAdapter(new LimitAdapter(this,consumelimit_list));
         if(consumelimit_list.size() != 0){
             tv.setVisibility(View.GONE);
@@ -244,9 +244,6 @@ public class FridgeActivity extends ListActivity {
         //Log.w("restore",isFirstBoot + "");
     }
     */
-
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

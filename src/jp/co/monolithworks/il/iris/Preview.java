@@ -73,9 +73,11 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
     private int mHeight;
     private int mPreviewWidth;
     private int mPreviewHeight;
+    private int mDelayTime = 3000;
+    private int mPhotographTime;
 
     private List<ResultData> mLists;
-    
+
     private Thread mTrd;
 
     //シングルトン
@@ -103,7 +105,7 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
         mLists = new ArrayList<ResultData>();
-        
+
     }
     //アプリケーションからコントロールに対してカメラをセット
     public void setCamera(Camera camera) {
@@ -412,9 +414,8 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
         if(result != null){
             isDecodeBitmapPreview = true;
             String contents = result.getText();
-            if(!(contents.equals(mResultText))){
-                mResultText = contents;
-
+            int nowTime = (int) System.currentTimeMillis();
+            if((nowTime- mPhotographTime) > mDelayTime){
                 //解析情報からバーコード情報を取り出し
                 BarcodeFormat format = result.getBarcodeFormat();
 
@@ -431,13 +432,15 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
 
                 String barcodeImageName = BitmapManager.saveBitmap(data,mContext,mPreviewWidth,mPreviewHeight);
                 Bitmap bmp = BitmapManager.readBitmap(barcodeImageName,mContext);
-                
+
                 if(bmp != null){
                     Bitmap cabbage = BitmapFactory.decodeResource(getResources(), R.drawable.cabbage);
                     ResultData resultData = new ResultData(bmp,cabbage,contents,"3",barcodeImageName,contents);
                     mLists.add(resultData);
                     mScanData.lists = mLists;
                 }
+
+                mPhotographTime = nowTime;
 
                 /*
                 //トースト表示
@@ -448,9 +451,6 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
                 toast.setView(imageView);
                 toast.show();
                 */
-
-                //画像削除(data/data/package_name/files)
-                //mContext.deleteFile(barcodeImageName);
             }
             isDecodeBitmapPreview = false;
         }else{
@@ -499,17 +499,16 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
 
                 String fileName = BitmapManager.pictureSaveBitmap(data,mContext,mPreviewWidth,mPreviewHeight);
                 Bitmap bmp = BitmapManager.readBitmap(fileName, mContext);
-                
-                
-                //トースト表示
+
+               //トースト表示
                 ImageView imageView = new ImageView(mContext);
                 imageView.setImageBitmap(bmp);
                 Toast toast = new Toast(mContext);
                 toast.setDuration(Toast.LENGTH_SHORT);
                 toast.setView(imageView);
                 toast.show();
-                
-                
+
+
                 if(bmp != null){
                     String contents = "その他";
                     Bitmap cabbage = BitmapFactory.decodeResource(getResources(), R.drawable.cabbage);

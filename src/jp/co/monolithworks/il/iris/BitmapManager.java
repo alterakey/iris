@@ -14,26 +14,26 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 
 public class BitmapManager {
-    
+
     public static String saveBitmap(byte[] data,Context context,int previewWidth,int previewHeight){
-        
+
         String directory = ConstantDefinition.directory;
-        
+
         //画像を保存
         int[] rgb = new int[(previewWidth * previewHeight)];//ARGB8888の画素の配列
         String fileName = null;
         Bitmap bmp=null;
-        
+
         Decoder decoder = new Decoder();
 
         fileName = "iris" + String.valueOf(System.currentTimeMillis()) + ".jpg";
 
         Log.w("ScanActivity","mPreviewWidth"+previewWidth);
         Log.w("ScanActivity","mPreviewHeight"+previewHeight);
-        
+
         Log.w("ScanActivity","filename:"+fileName);
         Log.w("ScanActivity","directory:"+directory);
-        
+
             try{
             //ARGB8888でからのビットマップ作成
                 bmp = Bitmap.createBitmap(previewWidth,previewHeight,Bitmap.Config.ARGB_8888);
@@ -70,7 +70,7 @@ public class BitmapManager {
         }
         return fileName;
     }
-    
+
     public static Bitmap readBitmap(String fileName,Context context){
         //画像読み込み()
         String directory = ConstantDefinition.directory;
@@ -94,7 +94,7 @@ public class BitmapManager {
         }
     	return bm;
     }
-    
+
     public static Boolean deleteBitmap(String fileName){
         String directory = ConstantDefinition.directory;
         try{
@@ -102,7 +102,6 @@ public class BitmapManager {
             file.delete();
             return true;
         }catch(Exception e){
-            
             return false;
         }
     }
