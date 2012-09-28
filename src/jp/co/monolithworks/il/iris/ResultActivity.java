@@ -39,7 +39,7 @@ import android.widget.ListView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
-public class ResultActivity extends ListActivity {
+public class ResultActivity extends Activity {
 
     private ScanData mScanData;
     private SQLiteDatabase mDb;
@@ -87,7 +87,7 @@ public class ResultActivity extends ListActivity {
         }else{
         }
 
-        ListView lv = (ListView)findViewById(R.id.result_listView);
+        ListView lv = (ListView)findViewById(R.id.result_list);
         lv.setCacheColorHint(Color.TRANSPARENT);
         int position = POSITION_NOT_DELETE;
         Bundle extras = getIntent().getExtras();
@@ -113,27 +113,6 @@ public class ResultActivity extends ListActivity {
         //ListView lv = (ListView)findViewById(R.id.list);
         //lv.setAdapter(new ResultAdapter(this,mLists));
         //lv.setScrollingCacheEnabled(false);
-        setListAdapter(new ResultAdapter(this,mLists));
-        getListView().setOnItemClickListener(new AdapterView.OnItemClickListener(){
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                int position, long id) {
-                // TODO Auto-generated method stub
-                ListView listView = (ListView) parent;
-
-                ResultData item = (ResultData)listView.getItemAtPosition(position);
-                ArrayAdapter<ResultData> adapter = (ArrayAdapter<ResultData>)listView.getAdapter();
-
-                Intent intent = new Intent();
-                intent.setClass(ResultActivity.this, CategoryActivity.class);
-                startActivityForResult(intent,REQUEST_ITEM);
-
-                FridgeRegister.getState().put(SELECTED_ITEM_KEY,mLists.get(position));
-                FridgeRegister.getState().put(SELECTED_ADAPTER_DELETE_KEY,adapter);
-                FridgeRegister.getState().put(SELECTED_ITEM_DELETE_KEY,item);
-                FridgeRegister.setListPosition(position);
-                }
-        });
 
         View emptyView = (View)findViewById(R.id.listview_empty);
         lv.setEmptyView(emptyView);
@@ -264,7 +243,7 @@ public class ResultActivity extends ListActivity {
 
     public void setListView(){
         mLists = mScanData.lists;
-        ListView lv = (ListView)findViewById(R.id.result_listView);
+        ListView lv = (ListView)findViewById(R.id.result_list);
         lv.setCacheColorHint(Color.TRANSPARENT);
         mAdapter = new ResultAdapter(this,mLists);
         lv.setAdapter(mAdapter);
