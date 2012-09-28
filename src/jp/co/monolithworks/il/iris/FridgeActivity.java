@@ -256,25 +256,21 @@ public class FridgeActivity extends Activity {
         Intent intent = new Intent();
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 
-        switch (item.getItemId()) {
-        case R.id.menu_grid:
+        int itemId = item.getItemId();
+        if (itemId == R.id.menu_grid) {
             isGridLayout = true;
             sp.edit().putBoolean("SaveLayout", isGridLayout).commit();
             reload();
-            break;
-        case R.id.menu_list:
+        } else if (itemId == R.id.menu_list) {
             isGridLayout = false;
             sp.edit().putBoolean("SaveLayout", isGridLayout).commit();
             reload();
-            break;
-        case R.id.menu_settings:
+        } else if (itemId == R.id.menu_settings) {
             intent.setClass(this, SettingActivity.class);
             startActivity(intent);
-            break;
-        case R.id.menu_scan:
+        } else if (itemId == R.id.menu_scan) {
             intent.setClass(this, ScanActivity.class);
             startActivity(intent);
-            break;
         }
         return true;
     }

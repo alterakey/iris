@@ -95,15 +95,11 @@ public class DetailActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent = new Intent();
 
-        switch (item.getItemId()) {
-        case R.id.menu_settings:
-            //intent.setClass(this, SettingActivity.class);
-            //startActivity(intent);
-            break;
-        case R.id.menu_fridge:
+        int itemId = item.getItemId();
+        if (itemId == R.id.menu_settings) {
+        } else if (itemId == R.id.menu_fridge) {
             intent.setClass(this, FridgeActivity.class);
             startActivity(intent);
-            break;
         }
         return true;
     }

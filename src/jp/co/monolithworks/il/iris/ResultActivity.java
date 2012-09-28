@@ -7,6 +7,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.actionbarsherlock.app.SherlockActivity;
+
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Vibrator;
@@ -39,7 +41,7 @@ import android.widget.ListView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
-public class ResultActivity extends Activity {
+public class ResultActivity extends SherlockActivity {
 
     private ScanData mScanData;
     private SQLiteDatabase mDb;
@@ -57,6 +59,7 @@ public class ResultActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setTheme(R.style.Theme_Sherlock_Light);
         setContentView(R.layout.activity_result);
 
         //ストレージのチェック
@@ -113,6 +116,27 @@ public class ResultActivity extends Activity {
         //ListView lv = (ListView)findViewById(R.id.list);
         //lv.setAdapter(new ResultAdapter(this,mLists));
         //lv.setScrollingCacheEnabled(false);
+        lv.setAdapter(new ResultAdapter(this,mLists));
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                int position, long id) {
+                // TODO Auto-generated method stub
+                ListView listView = (ListView) parent;
+
+                ResultData item = (ResultData)listView.getItemAtPosition(position);
+                ArrayAdapter<ResultData> adapter = (ArrayAdapter<ResultData>)listView.getAdapter();
+
+                Intent intent = new Intent();
+                intent.setClass(ResultActivity.this, CategoryActivity.class);
+                startActivityForResult(intent,REQUEST_ITEM);
+
+                FridgeRegister.getState().put(SELECTED_ITEM_KEY,mLists.get(position));
+                FridgeRegister.getState().put(SELECTED_ADAPTER_DELETE_KEY,adapter);
+                FridgeRegister.getState().put(SELECTED_ITEM_DELETE_KEY,item);
+                FridgeRegister.setListPosition(position);
+                }
+        });
 
         View emptyView = (View)findViewById(R.id.listview_empty);
         lv.setEmptyView(emptyView);
@@ -143,27 +167,25 @@ public class ResultActivity extends Activity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_result, menu);
+    public boolean onCreateOptionsMenu(com.actionbarsherlock.view.Menu menu) {
+        com.actionbarsherlock.view.MenuInflater inflater = getSupportMenuInflater();
+        inflater.inflate(R.menu.activity_result, menu);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(com.actionbarsherlock.view.MenuItem item) {
         Intent intent = new Intent();
-        switch (item.getItemId()) {
-            case R.id.menu_settings:
-                intent.setClass(ResultActivity.this, SettingActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.menu_fridge:
-                intent.setClass(ResultActivity.this, FridgeActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.menu_scan:
-                intent.setClass(ResultActivity.this, ScanActivity.class);
-                startActivity(intent);
-                break;
+        int itemId = item.getItemId();
+        if (itemId == R.id.menu_settings) {
+            intent.setClass(ResultActivity.this, SettingActivity.class);
+            startActivity(intent);
+        } else if (itemId == R.id.menu_fridge) {
+            intent.setClass(ResultActivity.this, FridgeActivity.class);
+            startActivity(intent);
+        } else if (itemId == R.id.menu_scan) {
+            intent.setClass(ResultActivity.this, ScanActivity.class);
+             startActivity(intent);
         }
         return true;
     }

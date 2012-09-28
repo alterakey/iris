@@ -48,6 +48,7 @@ public class ScanActivity extends Activity
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        
     }
 
     @Override
@@ -126,16 +127,14 @@ public class ScanActivity extends Activity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent = new Intent();
-        switch (item.getItemId()) {
-            case R.id.menu_scan_end:
-                intent.setClass(ScanActivity.this, ResultActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.menu_setting:
+        int itemId = item.getItemId();
+        if (itemId == R.id.menu_scan_end) { 
+            intent.setClass(ScanActivity.this, ResultActivity.class);
+            startActivity(intent);
+            } else if (itemId == R.id.menu_setting) {
                 intent.setClass(ScanActivity.this,SettingActivity.class);
                 startActivity(intent);
-                break;
-        }
+            }
         return true;
     }
 }
