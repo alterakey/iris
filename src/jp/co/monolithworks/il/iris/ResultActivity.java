@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockActivity;
 
 import android.os.Bundle;
@@ -41,7 +42,7 @@ import android.widget.ListView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
-public class ResultActivity extends SherlockActivity {
+public class ResultActivity extends BaseActionbarSherlockActivity {
 
     private ScanData mScanData;
     private SQLiteDatabase mDb;
@@ -58,9 +59,11 @@ public class ResultActivity extends SherlockActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setTheme(R.style.Theme_Sherlock_Light);
         setContentView(R.layout.activity_result);
+        
+        ActionBar actionbar = getSupportActionBar();
+        actionbar.setDisplayShowTitleEnabled(true);
+        actionbar.setTitle("商品登録");
 
         //ストレージのチェック
         String storageCheck = Environment.getExternalStorageState();

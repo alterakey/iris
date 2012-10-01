@@ -14,13 +14,19 @@ import android.util.*;
 
 import java.util.*;
 
-public class FridgeActivity extends Activity {
+import com.actionbarsherlock.app.ActionBar;
+
+public class FridgeActivity extends BaseActionbarSherlockActivity {
 
     private boolean isGridLayout = false;
 
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        
+        ActionBar actionbar = getSupportActionBar();
+        actionbar.setDisplayShowTitleEnabled(true);
+        actionbar.setTitle("冷蔵庫の中");
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         isGridLayout = sp.getBoolean("SaveLayout", false);
@@ -246,13 +252,14 @@ public class FridgeActivity extends Activity {
     */
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_fridge, menu);
+    public boolean onCreateOptionsMenu(com.actionbarsherlock.view.Menu menu) {
+        com.actionbarsherlock.view.MenuInflater inflater = getSupportMenuInflater();
+        inflater.inflate(R.menu.activity_fridge, menu);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(com.actionbarsherlock.view.MenuItem item) {
         Intent intent = new Intent();
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -276,7 +283,7 @@ public class FridgeActivity extends Activity {
     }
 
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu){
+    public boolean onPrepareOptionsMenu(com.actionbarsherlock.view.Menu menu){
         if(isGridLayout==true){
             menu.findItem(R.id.menu_grid).setVisible(false);
             menu.findItem(R.id.menu_list).setVisible(true);

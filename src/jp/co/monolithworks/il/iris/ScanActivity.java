@@ -137,4 +137,5 @@ public class ScanActivity extends Activity
             }
         return true;
     }
+
 }

@@ -6,6 +6,15 @@ import java.util.HashMap;
 public class ConsumeLimit{
 
     public static String[][] limit;
+    
+    public final String MEET = "1";
+    public final String FISH = "2";
+    public final String VEGETABLE = "3";
+    public final String DRINK = "4";
+    public final String FRUIT = "5";
+    public final String PROCESSED_FOOD = "6";
+    public final String FROZEN_FOOD = "7";
+    public final String CONDIMENT = "8";
 
     public ConsumeLimit(){
 
@@ -15,35 +24,35 @@ public class ConsumeLimit{
     private void setLimitday(){
 
         limit = new String[][]{
-            {"トマト","１４"}
-            ,{"キュウリ","２"}
-            ,{"タマネギ","１４"}
-            ,{"ナス","２"}
-            ,{"ニンジン","５"}//冬なら1週間としか書いてありませんでした。
-            ,{"ジャガイモ","３０"}
-            ,{"ダイコン","１０"}
-            ,{"キャベツ","１４"}
-            ,{"レタス","４"}
-            ,{"ホウレンソウ","７"}
-            ,{"ピーマン","７"}
-            ,{"バナナ","７"}
-            ,{"リンゴ","３０"}
-            ,{"イチゴ","４"}
-            ,{"ブドウ","１４"}
-            ,{"キウイフルーツ","７"}//1~2週間
-            ,{"シイタケ","６"}
-            ,{"生クリーム","９０"}
-            ,{"マーガリン","１８０"}
-            ,{"ヨーグルト","１４"}//プルーン
-            ,{"バター","１８０"}
-            ,{"チーズ","４"}//開封後
-            ,{"牛乳","７"}
-            ,{"パックジュース","１５"}
-            ,{"ビール","２７０"}
-            ,{"冷凍食品","３６５"}
-            ,{"マヨネーズ","９０"}
-            ,{"ケチャップ","５５０"}
-            ,{"肉","２"}
-            ,{"魚","４"}};
+            {"トマト","１４",VEGETABLE}
+            ,{"キュウリ","２",VEGETABLE}
+            ,{"タマネギ","１４",VEGETABLE}
+            ,{"ナス","２",VEGETABLE}
+            ,{"ニンジン","５",VEGETABLE}//冬なら1週間としか書いてありませんでした。
+            ,{"ジャガイモ","３０",VEGETABLE}
+            ,{"ダイコン","１０",VEGETABLE}
+            ,{"キャベツ","１４",VEGETABLE}
+            ,{"レタス","４",VEGETABLE}
+            ,{"ホウレンソウ","７",VEGETABLE}
+            ,{"ピーマン","７",VEGETABLE}
+            ,{"バナナ","７",FRUIT}
+            ,{"リンゴ","３０",FRUIT}
+            ,{"イチゴ","４",FRUIT}
+            ,{"ブドウ","１４",FRUIT}
+            ,{"キウイフルーツ","７",FRUIT}//1~2週間
+            ,{"シイタケ","６",VEGETABLE}
+            ,{"生クリーム","９０",PROCESSED_FOOD}
+            ,{"マーガリン","１８０",PROCESSED_FOOD}
+            ,{"ヨーグルト","１４",PROCESSED_FOOD}//プルーン
+            ,{"バター","１８０",PROCESSED_FOOD}
+            ,{"チーズ","４",PROCESSED_FOOD}//開封後
+            ,{"牛乳","７",DRINK}
+            ,{"パックジュース","１５",DRINK}
+            ,{"ビール","２７０",DRINK}
+            ,{"冷凍食品","３６５",FROZEN_FOOD}
+            ,{"マヨネーズ","９０",CONDIMENT}
+            ,{"ケチャップ","５５０",CONDIMENT}
+            ,{"肉","２",MEET}
+            ,{"魚","４",FISH}};
     }
 }

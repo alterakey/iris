@@ -1,5 +1,7 @@
 package jp.co.monolithworks.il.iris;
 
+import com.actionbarsherlock.app.ActionBar;
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
@@ -10,6 +12,7 @@ import android.content.*;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.AdapterView;
@@ -18,10 +21,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.util.Log;
 
-public class CategoryActivity extends Activity {
+public class CategoryActivity extends BaseActionbarSherlockActivity {
 
-	private int mPosition;
+    private int mPosition;
 
+    ActionBar.OnNavigationListener mNavigationCallback = new ActionBar.OnNavigationListener() {
+        @Override
+        public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+            // TODO Auto-generated method stub
+                
+            return false;
+        }
+    };
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,8 +45,8 @@ public class CategoryActivity extends Activity {
 
         gridview.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView parent, View v, int position, long id) {
-             	String category = ((TextView)v.findViewById(R.id.category)).getText().toString();
-             	String consumelimit = ((TextView)v.findViewById(R.id.consumelimit)).getText().toString();
+                String category = ((TextView)v.findViewById(R.id.category)).getText().toString();
+                String consumelimit = ((TextView)v.findViewById(R.id.consumelimit)).getText().toString();
                 ResultData rd = ScanData.getScanData().lists.get(mPosition);
                 rd.categoryText = category;
                 rd.consumelimitText = consumelimit;
@@ -44,14 +56,28 @@ public class CategoryActivity extends Activity {
                 finish();
             }
         });
+        
+        setListNavigation();
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_category, menu);
+    public boolean onCreateOptionsMenu(com.actionbarsherlock.view.Menu menu) {
+        com.actionbarsherlock.view.MenuInflater inflater = getSupportMenuInflater();
+        inflater.inflate(R.menu.activity_category, menu);
         return true;
     }
-
+        
+    public void setListNavigation(){
+        String[] data = {"すべて","肉","魚","野菜","飲料","果実","加工品"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,R.layout.sherlock_spinner_dropdown_item,data);
+        ActionBar actionbar = getSupportActionBar();
+        actionbar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+        actionbar.setListNavigationCallbacks(adapter, mNavigationCallback);
+        
+        actionbar.setDisplayShowTitleEnabled(true);
+        actionbar.setTitle("カテゴリー選択");
+    }
+        
     public class ImageAdapter extends BaseAdapter {
         private LayoutInflater inflater;
         private Context mContext;
@@ -105,5 +131,8 @@ public class CategoryActivity extends Activity {
             holder.consumelimit.setText(mConsumeLimit.limit[position][1] + "日");
             return convertView;
         }
+
+    
     }
 }
+
