@@ -7,17 +7,17 @@ public class ConsumeLimit{
 
     public static String[][] limit;
     
-    public final String MEET = "1";
-    public final String FISH = "2";
-    public final String VEGETABLE = "3";
-    public final String DRINK = "4";
-    public final String FRUIT = "5";
-    public final String PROCESSED_FOOD = "6";
-    public final String FROZEN_FOOD = "7";
-    public final String CONDIMENT = "8";
+    public static final String MEET = "1";
+    public static final String FISH = "2";
+    public static final String VEGETABLE = "3";
+    public static final String DRINK = "4";
+    public static final String DAIRY_PRODUCTS = "5";
+    public static final String FRUIT = "6";
+    public static final String PROCESSED_FOOD = "7";
+    public static final String CONDIMENT = "8";
+    public static final String FROZEN_FOOD = "9";
 
     public ConsumeLimit(){
-
         setLimitday();
     }
 

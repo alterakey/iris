@@ -1,6 +1,7 @@
 package jp.co.monolithworks.il.iris;
 
 import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.ActionBar.OnNavigationListener;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -24,12 +25,49 @@ import android.util.Log;
 public class CategoryActivity extends BaseActionbarSherlockActivity {
 
     private int mPosition;
+    private int mMeet = Integer.parseInt(ConsumeLimit.MEET);
+    private int mFish = Integer.parseInt(ConsumeLimit.FISH);
+    private int mVegetable = Integer.parseInt(ConsumeLimit.VEGETABLE);
+    private int mDrink = Integer.parseInt(ConsumeLimit.DRINK);
+    private int mDairy_products= Integer.parseInt(ConsumeLimit.DAIRY_PRODUCTS);
+    private int mFruit = Integer.parseInt(ConsumeLimit.FRUIT);
+    private int mProcessed_food = Integer.parseInt(ConsumeLimit.PROCESSED_FOOD);
+    private int mCondiment = Integer.parseInt(ConsumeLimit.CONDIMENT);
+    private int mFrozen_food = Integer.parseInt(ConsumeLimit.FROZEN_FOOD);
+    private int mAll = 0;
+    private int isCategory;
+    private ImageAdapter mImageAdapter;
+    private Context mContext;
 
     ActionBar.OnNavigationListener mNavigationCallback = new ActionBar.OnNavigationListener() {
         @Override
         public boolean onNavigationItemSelected(int itemPosition, long itemId) {
-            // TODO Auto-generated method stub
+            if (itemPosition == mMeet) {
+                isCategory = mMeet;
+                Log.w("category","mMeet;"+mMeet);
+                mImageAdapter = new ImageAdapter(mContext);
+                mImageAdapter.notifyDataSetChanged();
+                reload();
+            } else if (itemPosition == mFish) {
                 
+            } else if (itemPosition == mVegetable) {
+                
+            } else if (itemPosition == mDrink) {
+                
+            } else if (itemPosition == mDairy_products) {
+                
+            } else if (itemPosition == mFruit) {
+                
+            } else if (itemPosition == mProcessed_food) {
+                
+            } else if (itemPosition == mCondiment) {
+                
+            } else if (itemPosition == mFrozen_food) {
+                
+            } else if (itemPosition == mAll) {
+                isCategory = mAll;
+                mImageAdapter.notifyDataSetChanged();
+            }
             return false;
         }
     };
@@ -39,9 +77,12 @@ public class CategoryActivity extends BaseActionbarSherlockActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category);
         mPosition = getIntent().getIntExtra("position",0);
+        
+        mContext = (Context)this.getApplicationContext();
 
         GridView gridview = (GridView) findViewById(R.id.gridView);
-        gridview.setAdapter(new ImageAdapter(this));
+        mImageAdapter = new ImageAdapter(this);
+        gridview.setAdapter(mImageAdapter);
 
         gridview.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView parent, View v, int position, long id) {
@@ -68,14 +109,14 @@ public class CategoryActivity extends BaseActionbarSherlockActivity {
     }
         
     public void setListNavigation(){
-        String[] data = {"すべて","肉","魚","野菜","飲料","果実","加工品"};
+        String[] data = {"すべて表示","肉類","魚介","野菜","飲料","乳製品","果実","加工品","調味料","冷凍品"};
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,R.layout.sherlock_spinner_dropdown_item,data);
         ActionBar actionbar = getSupportActionBar();
         actionbar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
         actionbar.setListNavigationCallbacks(adapter, mNavigationCallback);
         
         actionbar.setDisplayShowTitleEnabled(true);
-        actionbar.setTitle("カテゴリー選択");
+        actionbar.setTitle("カテゴリー");
     }
         
     public class ImageAdapter extends BaseAdapter {
@@ -114,7 +155,7 @@ public class CategoryActivity extends BaseActionbarSherlockActivity {
           ViewHolder holder;
 
             if (convertView == null) {
-                    convertView = inflater.inflate(R.layout.grid_category, parent, false);
+                convertView = inflater.inflate(R.layout.grid_category, parent, false);
 
                 holder = new ViewHolder();
                 holder.position = position;
@@ -127,12 +168,28 @@ public class CategoryActivity extends BaseActionbarSherlockActivity {
                 holder = (ViewHolder) convertView.getTag();
                 holder.position = position;
             }
-            holder.category.setText(mConsumeLimit.limit[position][0] + "");
-            holder.consumelimit.setText(mConsumeLimit.limit[position][1] + "日");
+            if(isCategory == mMeet){
+                Log.w("category","mMeet;"+mMeet);
+                if(mConsumeLimit.limit[position][2].equals(ConsumeLimit.MEET)){
+                    holder.category.setText(mConsumeLimit.limit[position][0] + "");
+                    holder.consumelimit.setText(mConsumeLimit.limit[position][1] + "日");
+                    Log.w("category","item is meet");
+                }
+            }else{
+                holder.category.setText(mConsumeLimit.limit[position][0] + "");
+                holder.consumelimit.setText(mConsumeLimit.limit[position][1] + "日");
+                Log.w("category","item is not meet");
+            }
             return convertView;
         }
-
-    
     }
+    
+    public void reload(){
+        Intent intent = getIntent();
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        finish();
+        startActivity(intent);
+    }
+    
 }
 
