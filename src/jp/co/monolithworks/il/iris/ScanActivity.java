@@ -137,5 +137,16 @@ public class ScanActivity extends Activity
             }
         return true;
     }
+    
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event){
+        if(keyCode == KeyEvent.KEYCODE_BACK){
+            Intent intent = new Intent();
+            intent.setClass(ScanActivity.this, ResultActivity.class);
+            finish();
+            startActivity(intent);
+        }
+        return false;
+    }
 
 }
