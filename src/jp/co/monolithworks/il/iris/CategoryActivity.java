@@ -35,38 +35,54 @@ public class CategoryActivity extends BaseActionbarSherlockActivity {
     private int mCondiment = Integer.parseInt(ConsumeLimit.CONDIMENT);
     private int mFrozen_food = Integer.parseInt(ConsumeLimit.FROZEN_FOOD);
     private int mAll = 0;
-    private int isCategory;
     private ImageAdapter mImageAdapter;
     private Context mContext;
+    private int navigationState;
 
     ActionBar.OnNavigationListener mNavigationCallback = new ActionBar.OnNavigationListener() {
         @Override
         public boolean onNavigationItemSelected(int itemPosition, long itemId) {
             if (itemPosition == mMeet) {
-                isCategory = mMeet;
                 Log.w("category","mMeet;"+mMeet);
-                mImageAdapter = new ImageAdapter(mContext);
-                mImageAdapter.notifyDataSetChanged();
-                reload();
+                ImageAdapter imageAdapter = new ImageAdapter(mContext,mMeet);
+                GridView gridView = (GridView)findViewById(R.id.gridView);
+                gridView.setAdapter(imageAdapter);
             } else if (itemPosition == mFish) {
-                
+                ImageAdapter imageAdapter = new ImageAdapter(mContext,mFish);
+                GridView gridView = (GridView)findViewById(R.id.gridView);
+                gridView.setAdapter(imageAdapter);
             } else if (itemPosition == mVegetable) {
-                
+                ImageAdapter imageAdapter = new ImageAdapter(mContext,mVegetable);
+                GridView gridView = (GridView)findViewById(R.id.gridView);
+                gridView.setAdapter(imageAdapter);
             } else if (itemPosition == mDrink) {
-                
+                ImageAdapter imageAdapter = new ImageAdapter(mContext,mDrink);
+                GridView gridView = (GridView)findViewById(R.id.gridView);
+                gridView.setAdapter(imageAdapter);
             } else if (itemPosition == mDairy_products) {
-                
+                ImageAdapter imageAdapter = new ImageAdapter(mContext,mDairy_products);
+                GridView gridView = (GridView)findViewById(R.id.gridView);
+                gridView.setAdapter(imageAdapter);
             } else if (itemPosition == mFruit) {
-                
+                ImageAdapter imageAdapter = new ImageAdapter(mContext,mFruit);
+                GridView gridView = (GridView)findViewById(R.id.gridView);
+                gridView.setAdapter(imageAdapter);
             } else if (itemPosition == mProcessed_food) {
-                
+                ImageAdapter imageAdapter = new ImageAdapter(mContext,mProcessed_food);
+                GridView gridView = (GridView)findViewById(R.id.gridView);
+                gridView.setAdapter(imageAdapter);
             } else if (itemPosition == mCondiment) {
-                
+                ImageAdapter imageAdapter = new ImageAdapter(mContext,mCondiment);
+                GridView gridView = (GridView)findViewById(R.id.gridView);
+                gridView.setAdapter(imageAdapter);
             } else if (itemPosition == mFrozen_food) {
-                
+                ImageAdapter imageAdapter = new ImageAdapter(mContext,mFrozen_food);
+                GridView gridView = (GridView)findViewById(R.id.gridView);
+                gridView.setAdapter(imageAdapter);
             } else if (itemPosition == mAll) {
-                isCategory = mAll;
-                mImageAdapter.notifyDataSetChanged();
+                ImageAdapter imageAdapter = new ImageAdapter(mContext);
+                GridView gridView = (GridView)findViewById(R.id.gridView);
+                gridView.setAdapter(imageAdapter);
             }
             return false;
         }
@@ -116,7 +132,7 @@ public class CategoryActivity extends BaseActionbarSherlockActivity {
         actionbar.setListNavigationCallbacks(adapter, mNavigationCallback);
         
         actionbar.setDisplayShowTitleEnabled(true);
-        actionbar.setTitle("カテゴリー");
+        actionbar.setTitle("分類選択");
     }
         
     public class ImageAdapter extends BaseAdapter {
@@ -127,6 +143,13 @@ public class CategoryActivity extends BaseActionbarSherlockActivity {
         public ImageAdapter(Context c) {
             mContext = c;
             mConsumeLimit = new ConsumeLimit();
+            this.inflater = (LayoutInflater) mContext
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        }
+        
+        public ImageAdapter(Context c,int category){
+            mContext = c;
+            mConsumeLimit = new ConsumeLimit(category);
             this.inflater = (LayoutInflater) mContext
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
@@ -168,18 +191,8 @@ public class CategoryActivity extends BaseActionbarSherlockActivity {
                 holder = (ViewHolder) convertView.getTag();
                 holder.position = position;
             }
-            if(isCategory == mMeet){
-                Log.w("category","mMeet;"+mMeet);
-                if(mConsumeLimit.limit[position][2].equals(ConsumeLimit.MEET)){
-                    holder.category.setText(mConsumeLimit.limit[position][0] + "");
-                    holder.consumelimit.setText(mConsumeLimit.limit[position][1] + "日");
-                    Log.w("category","item is meet");
-                }
-            }else{
                 holder.category.setText(mConsumeLimit.limit[position][0] + "");
                 holder.consumelimit.setText(mConsumeLimit.limit[position][1] + "日");
-                Log.w("category","item is not meet");
-            }
             return convertView;
         }
     }

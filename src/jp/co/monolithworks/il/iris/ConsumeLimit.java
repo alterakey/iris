@@ -17,14 +17,8 @@ public class ConsumeLimit{
     public static final String CONDIMENT = "8";
     public static final String FROZEN_FOOD = "9";
 
-    public ConsumeLimit(){
-        setLimitday();
-    }
-
-    private void setLimitday(){
-
-        limit = new String[][]{
-            {"トマト","１４",VEGETABLE}
+    private String[][] mLimit = new String[][] {
+             {"トマト","１４",VEGETABLE}
             ,{"キュウリ","２",VEGETABLE}
             ,{"タマネギ","１４",VEGETABLE}
             ,{"ナス","２",VEGETABLE}
@@ -53,6 +47,107 @@ public class ConsumeLimit{
             ,{"マヨネーズ","９０",CONDIMENT}
             ,{"ケチャップ","５５０",CONDIMENT}
             ,{"肉","２",MEET}
-            ,{"魚","４",FISH}};
+            ,{"魚","４",FISH}
+    };
+    
+    public ConsumeLimit(){
+        setLimitday();
+    }
+    
+    public ConsumeLimit(int category){
+        setLimitday(category);
+    }
+
+    private void setLimitday(){
+        limit = mLimit;
+    }
+    
+    public int getCategoryLength(String[][] limit, int category){
+        int limitLength = 0;
+        for (String[] element : limit){
+            if(Integer.parseInt(element[2]) == category){
+                limitLength++;
+            }
+        }
+        return limitLength;
+    }
+    
+    private void setLimitday(int category){
+        int length = getCategoryLength(mLimit,category);
+        String[][] limitday = new String[length][];
+        if (category == Integer.parseInt(MEET)){
+            int count = 0;
+            for (String[] categoryLimit : mLimit){
+                if(categoryLimit[2].equals(MEET)){
+                    limitday[count] = categoryLimit;
+                    count++;
+                }
+            }
+        }else if (category == Integer.parseInt(FISH)){
+            int count = 0;
+            for (String[] categoryLimit : mLimit){
+                if(categoryLimit[2].equals(FISH)){
+                    limitday[count] = categoryLimit;
+                    count++;
+                }
+            }
+        }else if (category == Integer.parseInt(VEGETABLE)){
+            int count = 0;
+            for (String[] categoryLimit : mLimit){
+                if(categoryLimit[2].equals(VEGETABLE)){
+                    limitday[count] = categoryLimit;
+                    count++;
+                }
+            }
+        }else if (category == Integer.parseInt(DRINK)){
+            int count = 0;
+            for (String[] categoryLimit : mLimit){
+                if(categoryLimit[2].equals(DRINK)){
+                    limitday[count] = categoryLimit;
+                    count++;
+                }
+            }
+        }else if (category == Integer.parseInt(DAIRY_PRODUCTS)){
+            int count = 0;
+            for (String[] categoryLimit : mLimit){
+                if(categoryLimit[2].equals(DAIRY_PRODUCTS)){
+                    limitday[count] = categoryLimit;
+                    count++;
+                }
+            }
+        }else if (category == Integer.parseInt(FRUIT)){
+            int count = 0;
+            for (String[] categoryLimit : mLimit){
+                if(categoryLimit[2].equals(FRUIT)){
+                    limitday[count] = categoryLimit;
+                    count++;
+                }
+            }
+        }else if (category == Integer.parseInt(PROCESSED_FOOD)){
+            int count = 0;
+            for (String[] categoryLimit : mLimit){
+                if(categoryLimit[2].equals(PROCESSED_FOOD)){
+                    limitday[count] = categoryLimit;
+                    count++;
+                }
+            }
+        }else if (category == Integer.parseInt(CONDIMENT)){
+            int count = 0;
+            for (String[] categoryLimit : mLimit){
+                if(categoryLimit[2].equals(CONDIMENT)){
+                    limitday[count] = categoryLimit;
+                    count++;
+                }
+            }
+        }else if (category == Integer.parseInt(FROZEN_FOOD)){
+            int count = 0;
+            for (String[] categoryLimit : mLimit){
+                if(categoryLimit[2].equals(FROZEN_FOOD)){
+                    limitday[count] = categoryLimit;
+                    count++;
+                }
+            }
+        }
+        limit = limitday;
     }
 }

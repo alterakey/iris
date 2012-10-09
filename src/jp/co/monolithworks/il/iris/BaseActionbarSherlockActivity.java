@@ -10,7 +10,7 @@ import com.actionbarsherlock.app.SherlockActivity;
 public class BaseActionbarSherlockActivity extends SherlockActivity{
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //requestWindowFeature(Window.FEATURE_NO_TITLE);
         setTheme(R.style.actionbar_theme);
     }
 }
