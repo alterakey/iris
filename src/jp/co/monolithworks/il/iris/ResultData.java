@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 
 public class ResultData {
 	public Bitmap thumbnailBitmap,iconBitmap;
-	public String categoryText,consumelimitText,thumbnailFileName,jan_code;
+	public String categoryText,consumelimitText,thumbnailFileName,jan_code,record_date;
 
     public ResultData(Bitmap thumbnailBitmap,Bitmap iconBitmap,String categoryText,String consumelimitText,String thumbnailFileName){
         this.thumbnailBitmap = thumbnailBitmap;
@@ -26,6 +26,10 @@ public class ResultData {
     public ResultData(Bitmap thumbnailBitmap,String categoryText){
         this.thumbnailBitmap = thumbnailBitmap;
         this.categoryText = categoryText;
+    }
+    
+    public ResultData(String record_date){
+        this.record_date = record_date;
     }
 
 }

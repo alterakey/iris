@@ -1,7 +1,9 @@
 package jp.co.monolithworks.il.iris;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -55,6 +57,7 @@ public class ResultActivity extends BaseActionbarSherlockActivity {
     private ListView mListView;
     private Context mContext = this;
     private ArrayAdapter<ResultData> mAdapter;
+    private int mSelectListPosition = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -101,9 +104,10 @@ public class ResultActivity extends BaseActionbarSherlockActivity {
         if(extras != null){
             position = extras.getInt("listDeletePosition");
         }
-
         setListView(position);
 
+        
+        
         View emptyView = (View)findViewById(R.id.listview_empty);
         mListView.setEmptyView(emptyView);
 
@@ -126,7 +130,7 @@ public class ResultActivity extends BaseActionbarSherlockActivity {
     private void setListView(int position){
 
         if(position == POSITION_NOT_DELETE){
-        	mAdapter = new ResultAdapter(this,mLists);
+            mAdapter = new ResultAdapter(this,mLists);
             mListView.setAdapter(mAdapter);
         }else{
             mAdapter  = (ArrayAdapter<ResultData>)FridgeRegister.getState().get(ResultActivity.SELECTED_ADAPTER_DELETE_KEY);
@@ -138,12 +142,9 @@ public class ResultActivity extends BaseActionbarSherlockActivity {
             mListView.invalidateViews();
             position = POSITION_NOT_DELETE;
         }
-
+        mListView.setSelection(mSelectListPosition);
         mListView.setScrollingCacheEnabled(false);
 
-        //ListView mListView = (ListView)findViewById(R.id.list);
-        //mListView.setAdapter(new ResultAdapter(this,mLists));
-        //mListView.setScrollingCacheEnabled(false);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
@@ -172,9 +173,10 @@ public class ResultActivity extends BaseActionbarSherlockActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (requestCode == REQUEST_ITEM && resultCode == RESULT_OK) {
             Bundle extras = intent.getExtras();
-            //mListView = (listView)findViewById(R.id.result_listView);
             setListView();
             if (extras != null) {
+                int position = extras.getInt("position");
+                mSelectListPosition = position;
             }
             Toast.makeText(this, "戻りました。", Toast.LENGTH_SHORT).show();
         }
@@ -245,6 +247,7 @@ public class ResultActivity extends BaseActionbarSherlockActivity {
                     public void onClick(DialogInterface dialog, int id) {
                         for(int i=0; i < count; i++){
                             ResultData rd = mAdapter.getItem(i);
+                            rd.record_date = DateDecrement.setDate();
                             item_insert(rd);
                         }
                         mAdapter.clear();
@@ -274,6 +277,7 @@ public class ResultActivity extends BaseActionbarSherlockActivity {
         cv.put("category_name",data.categoryText);
         cv.put("bar_code", data.thumbnailFileName);
         cv.put("consume_limit",data.consumelimitText);
+        cv.put("record_date", data.record_date);
         db.insert(cv);
     }
 
@@ -284,4 +288,5 @@ public class ResultActivity extends BaseActionbarSherlockActivity {
         mAdapter = new ResultAdapter(this,mLists);
         mListView.setAdapter(mAdapter);
     }
+    
 }

@@ -10,7 +10,7 @@ import android.util.Log;
 import android.view.*;
 import android.widget.*;
 
-public class DetailActivity extends Activity {
+public class DetailActivity extends BaseActionbarSherlockActivity {
 
     private final static int REQUEST_ITEM = 0;
     private final int POSITION_INITIALIZE = -1;
@@ -19,7 +19,6 @@ public class DetailActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_detail);
 
         WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
@@ -51,8 +50,8 @@ public class DetailActivity extends Activity {
     public void onClick(View v){
         Intent intent = new Intent();
         if(v.getId() == R.id.categoryButton){
-            intent.setClass(this,CategoryActivity.class);
-            startActivityForResult(intent,REQUEST_ITEM);
+            //intent.setClass(this,CategoryActivity.class);
+            //startActivityForResult(intent,REQUEST_ITEM);
         }else if(v.getId() == R.id.okButton){
             int position = register();
             intent.putExtra("listDeletePosition", position);
@@ -87,12 +86,12 @@ public class DetailActivity extends Activity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_detail, menu);
+    public boolean onCreateOptionsMenu(com.actionbarsherlock.view.Menu menu) {
+        getSupportMenuInflater().inflate(R.menu.activity_detail, menu);
         return true;
     }
 
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(com.actionbarsherlock.view.MenuItem item) {
         Intent intent = new Intent();
 
         int itemId = item.getItemId();

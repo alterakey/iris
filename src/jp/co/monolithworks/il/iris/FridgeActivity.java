@@ -48,6 +48,8 @@ public class FridgeActivity extends BaseActionbarSherlockActivity {
         List<Map<String,String>> items = db.query();
 
         for(Map<String,String> item : items){
+            int record_date = Integer.parseInt(item.get("record_date"));
+            
             ConsumeLimit_Items ci = new ConsumeLimit_Items();
             ci.category = item.get("category_name");
             ci.consumelimit = item.get("consume_limit");
@@ -110,6 +112,7 @@ public class FridgeActivity extends BaseActionbarSherlockActivity {
 
         private class ViewHolder {
             Button delete;
+            Button edit;
             ImageView imageview1;
             ImageView imageview2;
             TextView textview1;
@@ -136,6 +139,8 @@ public class FridgeActivity extends BaseActionbarSherlockActivity {
                 holder.textview2 = (TextView) convertView.findViewById(R.id.consumelimit);
                 holder.imageview1 = (ImageView) convertView.findViewById(R.id.thumbnail);
                 holder.imageview2 = (ImageView) convertView.findViewById(R.id.icon);
+                holder.edit = (Button)convertView.findViewById(R.id.editButton);
+                holder.edit.setVisibility(View.INVISIBLE);
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();

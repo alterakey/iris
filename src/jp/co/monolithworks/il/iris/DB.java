@@ -28,14 +28,26 @@ public class DB{
         }catch(SQLiteException e){
             throw e;
         }finally{
-        	cleanup();
+            cleanup();
+        }
+    }
+    
+    public void update(){
+        try{
+            String sql = "update fridge_table set consume_limit = consume_limit -1 ";
+            mDb.execSQL(sql);
+        }catch(SQLiteException e){
+            throw e;
+        }finally{
+            cleanup();
         }
     }
 
     public List<Map<String,String>> query(){
-        String query = "SELECT jan_code,category_name,category_icon,bar_code,consume_limit FROM fridge_table ORDER BY consume_limit";
+        String query = "SELECT jan_code,category_name,category_icon,bar_code,consume_limit,record_date FROM fridge_table ORDER BY consume_limit";
         Cursor c = null;
         List<Map<String,String>> items = new LinkedList<Map<String,String>>();
+        Log.w("DB","DB query");
         try{
             c = mDb.rawQuery(query,null);
             for(c.moveToFirst();!c.isAfterLast();c.moveToNext()){
@@ -45,6 +57,7 @@ public class DB{
                 item.put("category_icon",c.getString(2));
                 item.put("bar_code",c.getString(3));
                 item.put("consume_limit",c.getString(4));
+                item.put("record_date", c.getString(5));
                 items.add(item);
             }
         }catch(SQLiteException e){
@@ -93,7 +106,8 @@ public class DB{
             str += ",category_name text";
             str += ",category_icon text";
             str += ",bar_code text";
-            str += ",consume_limit text)";
+            str += ",consume_limit text";
+            str += ",record_date text)";
             db.execSQL(str);
         }
 

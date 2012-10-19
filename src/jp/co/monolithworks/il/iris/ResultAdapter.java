@@ -16,6 +16,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class ResultAdapter extends ArrayAdapter<ResultData>{
     LayoutInflater mInflater;
@@ -55,6 +56,7 @@ public class ResultAdapter extends ArrayAdapter<ResultData>{
             holder.consumelimitText = (TextView)convertView.findViewById(R.id.consumelimit);
             holder.frameLayout = (FrameLayout)convertView.findViewById(R.id.f_layout);
             holder.delete = (Button)convertView.findViewById(R.id.deleteButton);
+            holder.edit = (Button)convertView.findViewById(R.id.editButton);
 
             switch(count){
             case 0:
@@ -99,6 +101,15 @@ public class ResultAdapter extends ArrayAdapter<ResultData>{
                 mContext.setListView();
             }
         });
+        holder.edit.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Toast.makeText(mContext, "edit", Toast.LENGTH_SHORT).show();
+                ScanData sd = ScanData.getScanData();
+                ResultData rd = sd.lists.get(transferPosition);
+                
+            }
+        });
         return convertView;
     }
 
@@ -107,6 +118,7 @@ public class ResultAdapter extends ArrayAdapter<ResultData>{
         TextView categoryText,consumelimitText;
         FrameLayout frameLayout;
         Button delete;
+        Button edit;
     }
 
 }

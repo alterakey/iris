@@ -109,6 +109,7 @@ public class CategoryActivity extends BaseActionbarSherlockActivity {
                 rd.consumelimitText = consumelimit;
                 ScanData.getScanData().lists.set(mPosition,rd);
                 Intent intent = new Intent();
+                intent.putExtra("position", mPosition);
                 setResult(RESULT_OK,intent);
                 finish();
             }

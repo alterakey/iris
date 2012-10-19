@@ -25,6 +25,13 @@
           android:layout_height="wrap_content"
           android:layout_gravity="right"
           android:background="@android:drawable/ic_delete" />
+      <Button
+          android:id="@+id/editButton"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="left|center"
+          android:focusable="false"
+          android:background="@android:drawable/ic_input_add" />
       <ImageView
 	  android:id="@+id/icon"
 	  android:layout_width="30dp"
