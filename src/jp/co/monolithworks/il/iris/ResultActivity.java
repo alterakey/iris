@@ -81,8 +81,11 @@ public class ResultActivity extends BaseActionbarSherlockActivity {
             file.mkdir();
             Log.w("scanactivity","mkdir");
         }else{
-        	Log.w("scanactivity","not mkdir");
+            Log.w("scanactivity","not mkdir");
         }
+        
+        Intent intent = new Intent(ResultActivity.this,ConsumeLimitCutService.class);
+        startService(intent);
     }
 
     @Override
